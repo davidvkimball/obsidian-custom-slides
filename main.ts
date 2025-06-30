@@ -154,7 +154,8 @@ module.exports = class CustomSlidesPlugin extends Plugin {
   }
 
   onunload() {
-    // Clean up if needed
+    const observer = document.querySelector("style[data-custom-slides]")?.parentElement?.querySelector("mutation-observer"); // Approximate, adjust as needed
+    if (observer) observer.disconnect();
   }
 };
 
