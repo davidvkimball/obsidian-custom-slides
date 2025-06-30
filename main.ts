@@ -1,134 +1,259 @@
-import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
+const { Plugin, WorkspaceLeaf, ViewState, Setting, PluginSettingTab } = require("obsidian");
 
-// Remember to rename these classes and interfaces!
+module.exports = class CustomSlidesPlugin extends Plugin {
+  async onload() {
+    try {
+      await this.loadSettings();
+      this.addStyle();
+      this.setupModeObserver();
+      this.addSettingsTab();
+    } catch (e) {
+      console.error("Plugin load error:", e);
+    }
+  }
 
-interface MyPluginSettings {
-	mySetting: string;
-}
+  async loadSettings() {
+    this.settings = {
+      hideNavigateLeft: true,
+      hideNavigateRight: true,
+      hideNavigateUp: true,
+      hideNavigateDown: true,
+      hideCloseBtn: true,
+      progressHeight: 10,
+      customCSS: "",
+      leftAlignBullets: false,
+    };
+    const savedSettings = await this.loadData();
+    Object.assign(this.settings, savedSettings);
+  }
 
-const DEFAULT_SETTINGS: MyPluginSettings = {
-	mySetting: 'default'
-}
+  async saveSettings() {
+    await this.saveData(this.settings);
+    this.addStyle(); // Reapply styles after saving
+  }
 
-export default class MyPlugin extends Plugin {
-	settings: MyPluginSettings;
+  addStyle() {
+    // Remove existing style element to prevent duplication
+    const existingStyle = document.querySelector("style[data-custom-slides]");
+    if (existingStyle) existingStyle.remove();
 
-	async onload() {
-		await this.loadSettings();
+    const style = document.createElement("style");
+    style.setAttribute("data-custom-slides", "true"); // Add identifier for easy removal
 
-		// This creates an icon in the left ribbon.
-		const ribbonIconEl = this.addRibbonIcon('dice', 'Sample Plugin', (evt: MouseEvent) => {
-			// Called when the user clicks the icon.
-			new Notice('This is a notice!');
-		});
-		// Perform additional things with the ribbon
-		ribbonIconEl.addClass('my-plugin-ribbon-class');
+    let cssContent = "";
 
-		// This adds a status bar item to the bottom of the app. Does not work on mobile apps.
-		const statusBarItemEl = this.addStatusBarItem();
-		statusBarItemEl.setText('Status Bar Text');
+    // Apply display rules for navigation and close button
+    if (this.settings.hideNavigateLeft) {
+      cssContent += ".reveal .controls .navigate-left { display: none !important; }\n";
+    } else {
+      cssContent += ".reveal .controls .navigate-left { display: block !important; }\n";
+    }
+    if (this.settings.hideNavigateRight) {
+      cssContent += ".reveal .controls .navigate-right { display: none !important; }\n";
+    } else {
+      cssContent += ".reveal .controls .navigate-right { display: block !important; }\n";
+    }
+    if (this.settings.hideNavigateUp) {
+      cssContent += ".reveal .controls .navigate-up { display: none !important; }\n";
+    } else {
+      cssContent += ".reveal .controls .navigate-up { display: block !important; }\n";
+    }
+    if (this.settings.hideNavigateDown) {
+      cssContent += ".reveal .controls .navigate-down { display: none !important; }\n";
+    } else {
+      cssContent += ".reveal .controls .navigate-down { display: block !important; }\n";
+    }
+    if (this.settings.hideCloseBtn) {
+      cssContent += ".slides-close-btn { display: none !important; }\n";
+    } else {
+      cssContent += ".slides-close-btn { display: block !important; }\n";
+    }
 
-		// This adds a simple command that can be triggered anywhere
-		this.addCommand({
-			id: 'open-sample-modal-simple',
-			name: 'Open sample modal (simple)',
-			callback: () => {
-				new SampleModal(this.app).open();
-			}
-		});
-		// This adds an editor command that can perform some operation on the current editor instance
-		this.addCommand({
-			id: 'sample-editor-command',
-			name: 'Sample editor command',
-			editorCallback: (editor: Editor, view: MarkdownView) => {
-				console.log(editor.getSelection());
-				editor.replaceSelection('Sample Editor Command');
-			}
-		});
-		// This adds a complex command that can check whether the current state of the app allows execution of the command
-		this.addCommand({
-			id: 'open-sample-modal-complex',
-			name: 'Open sample modal (complex)',
-			checkCallback: (checking: boolean) => {
-				// Conditions to check
-				const markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
-				if (markdownView) {
-					// If checking is true, we're simply "checking" if the command can be run.
-					// If checking is false, then we want to actually perform the operation.
-					if (!checking) {
-						new SampleModal(this.app).open();
-					}
+    // Apply progress height
+    cssContent += `.reveal .progress { height: ${this.settings.progressHeight}px !important; }\n`;
 
-					// This command will only show up in Command Palette when the check function returns true
-					return true;
-				}
-			}
-		});
+    // Apply left-align for bullets if enabled
+    if (this.settings.leftAlignBullets) {
+      cssContent += ".reveal ol, .reveal dl, .reveal ul { display: block; text-align: left; margin: 0 0 0 1em; }\n";
+    }
 
-		// This adds a settings tab so the user can configure various aspects of the plugin
-		this.addSettingTab(new SampleSettingTab(this.app, this));
+    // Append custom CSS
+    cssContent += this.settings.customCSS;
 
-		// If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
-		// Using this function will automatically remove the event listener when this plugin is disabled.
-		this.registerDomEvent(document, 'click', (evt: MouseEvent) => {
-			console.log('click', evt);
-		});
+    style.textContent = cssContent;
+    document.head.appendChild(style);
+  }
 
-		// When registering intervals, this function will automatically clear the interval when the plugin is disabled.
-		this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
-	}
+  setupModeObserver() {
+    let previousMode = null;
+    let isInSlidesMode = false;
 
-	onunload() {
+    const observer = new MutationObserver((mutations, obs) => {
+      try {
+        const reveal = document.querySelector(".reveal");
+        console.log("Mode check:", { reveal: !!reveal, isInSlidesMode });
 
-	}
+        if (reveal && !isInSlidesMode) {
+          console.log("Slides mode detected, switching to reading mode");
+          const activeLeaf = this.app.workspace.activeLeaf;
+          if (activeLeaf) {
+            previousMode = activeLeaf.getViewState().mode;
+          }
+          this.app.workspace.setActiveLeaf(activeLeaf, { active: true });
+          this.app.workspace.activeLeaf.setViewState({
+            type: "markdown",
+            state: { mode: "preview" },
+          });
+          isInSlidesMode = true;
+        } else if (!reveal && isInSlidesMode) {
+          console.log("Exiting Slides mode detected, restoring previous mode:", previousMode);
+          const activeLeaf = this.app.workspace.activeLeaf;
+          if (activeLeaf) {
+            this.app.workspace.setActiveLeaf(activeLeaf, { active: true });
+            activeLeaf.setViewState({
+              type: "markdown",
+              state: { mode: previousMode || "source" },
+            }).then(() => {
+              console.log("Mode restoration attempted");
+              isInSlidesMode = false;
+            }).catch(e => console.error("Mode restoration error:", e));
+          }
+        }
+      } catch (e) {
+        console.error("Mode observer error:", e);
+      }
+    });
 
-	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
-	}
+    observer.observe(document.body, { childList: true, subtree: true });
+    console.log("Mode observer started");
 
-	async saveSettings() {
-		await this.saveData(this.settings);
-	}
-}
+    // Fallback timer to check for exit
+    const checkExitInterval = setInterval(() => {
+      if (isInSlidesMode && !document.querySelector(".reveal")) {
+        console.log("Fallback: Exiting Slides mode detected, restoring previous mode:", previousMode);
+        const activeLeaf = this.app.workspace.activeLeaf;
+        if (activeLeaf) {
+          this.app.workspace.setActiveLeaf(activeLeaf, { active: true });
+          activeLeaf.setViewState({
+            type: "markdown",
+            state: { mode: previousMode || "source" },
+          }).then(() => {
+            console.log("Fallback mode restoration attempted");
+            isInSlidesMode = false;
+          }).catch(e => console.error("Fallback restoration error:", e));
+        }
+      }
+    }, 1000); // Check every 1 second
 
-class SampleModal extends Modal {
-	constructor(app: App) {
-		super(app);
-	}
+    // Cleanup interval on unload
+    this.register(() => clearInterval(checkExitInterval));
+  }
 
-	onOpen() {
-		const {contentEl} = this;
-		contentEl.setText('Woah!');
-	}
+  addSettingsTab() {
+    this.addSettingTab(new CustomSlidesSettingTab(this.app, this));
+  }
 
-	onClose() {
-		const {contentEl} = this;
-		contentEl.empty();
-	}
-}
+  onunload() {
+    // Clean up if needed
+  }
+};
 
-class SampleSettingTab extends PluginSettingTab {
-	plugin: MyPlugin;
+class CustomSlidesSettingTab extends PluginSettingTab {
+  constructor(app, plugin) {
+    super(app, plugin);
+    this.plugin = plugin;
+  }
 
-	constructor(app: App, plugin: MyPlugin) {
-		super(app, plugin);
-		this.plugin = plugin;
-	}
+  display() {
+    const { containerEl } = this;
 
-	display(): void {
-		const {containerEl} = this;
+    containerEl.empty();
 
-		containerEl.empty();
+    containerEl.createEl("h2", { text: "Custom Slides Settings" });
 
-		new Setting(containerEl)
-			.setName('Setting #1')
-			.setDesc('It\'s a secret')
-			.addText(text => text
-				.setPlaceholder('Enter your secret')
-				.setValue(this.plugin.settings.mySetting)
-				.onChange(async (value) => {
-					this.plugin.settings.mySetting = value;
-					await this.plugin.saveSettings();
-				}));
-	}
+    new Setting(containerEl)
+      .setName("Hide Left Navigation Arrow")
+      .setDesc("Toggle visibility of the left navigation arrow.")
+      .addToggle(toggle => toggle
+        .setValue(this.plugin.settings.hideNavigateLeft)
+        .onChange(async (value) => {
+          this.plugin.settings.hideNavigateLeft = value;
+          await this.plugin.saveSettings();
+        }));
+
+    new Setting(containerEl)
+      .setName("Hide Right Navigation Arrow")
+      .setDesc("Toggle visibility of the right navigation arrow.")
+      .addToggle(toggle => toggle
+        .setValue(this.plugin.settings.hideNavigateRight)
+        .onChange(async (value) => {
+          this.plugin.settings.hideNavigateRight = value;
+          await this.plugin.saveSettings();
+        }));
+
+    new Setting(containerEl)
+      .setName("Hide Up Navigation Arrow")
+      .setDesc("Toggle visibility of the up navigation arrow.")
+      .addToggle(toggle => toggle
+        .setValue(this.plugin.settings.hideNavigateUp)
+        .onChange(async (value) => {
+          this.plugin.settings.hideNavigateUp = value;
+          await this.plugin.saveSettings();
+        }));
+
+    new Setting(containerEl)
+      .setName("Hide Down Navigation Arrow")
+      .setDesc("Toggle visibility of the down navigation arrow.")
+      .addToggle(toggle => toggle
+        .setValue(this.plugin.settings.hideNavigateDown)
+        .onChange(async (value) => {
+          this.plugin.settings.hideNavigateDown = value;
+          await this.plugin.saveSettings();
+        }));
+
+    new Setting(containerEl)
+      .setName("Hide Close Button")
+      .setDesc("Toggle visibility of the close button.")
+      .addToggle(toggle => toggle
+        .setValue(this.plugin.settings.hideCloseBtn)
+        .onChange(async (value) => {
+          this.plugin.settings.hideCloseBtn = value;
+          await this.plugin.saveSettings();
+        }));
+
+    new Setting(containerEl)
+      .setName("Left-Align Lists")
+      .setDesc("Toggle to left-align bulleted and numbered lists in presentation mode.")
+      .addToggle(toggle => toggle
+        .setValue(this.plugin.settings.leftAlignBullets)
+        .onChange(async (value) => {
+          this.plugin.settings.leftAlignBullets = value;
+          await this.plugin.saveSettings();
+        }));
+
+    new Setting(containerEl)
+      .setName("Progress Bar Height")
+      .setDesc("Set the height of the progress bar in pixels.")
+      .addText(text => text
+        .setPlaceholder("Enter height in pixels")
+        .setValue(this.plugin.settings.progressHeight.toString())
+        .onChange(async (value) => {
+          const numValue = parseInt(value, 10);
+          if (!isNaN(numValue) && numValue >= 0) {
+            this.plugin.settings.progressHeight = numValue;
+            await this.plugin.saveSettings();
+          }
+        }));
+
+    new Setting(containerEl)
+      .setName("Custom CSS")
+      .setDesc("Enter custom CSS to override default styles.")
+      .addTextArea(text => text
+        .setPlaceholder("e.g., .reveal { background: black; }")
+        .setValue(this.plugin.settings.customCSS)
+        .onChange(async (value) => {
+          this.plugin.settings.customCSS = value;
+          await this.plugin.saveSettings();
+        }));
+  }
 }
