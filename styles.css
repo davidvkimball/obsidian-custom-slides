@@ -1,8 +1,18 @@
-/*
+/* Default structural styles for reveal.js slides */
+.reveal .controls .navigate-left,
+.reveal .controls .navigate-right,
+.reveal .controls .navigate-up,
+.reveal .controls .navigate-down,
+.slides-close-btn {
+  display: block; /* Default visibility, overridden by dynamic styles */
+}
 
-This CSS file will be included with your plugin, and
-available in the app when your plugin is enabled.
+.reveal .progress {
+  height: var(--progress-height, 10px); /* Default height, updated dynamically */
+}
 
-If your plugin does not need CSS, delete this file.
-
-*/
+.reveal ol,
+.reveal dl,
+.reveal ul {
+  display: block; /* Default display, left-align added dynamically */
+}

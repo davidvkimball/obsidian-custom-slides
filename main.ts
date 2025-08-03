@@ -8,7 +8,7 @@ module.exports = class CustomSlidesPlugin extends Plugin {
       this.setupModeObserver();
       this.addSettingsTab();
     } catch (e) {
-      console.error("Plugin load error:", e);
+      // Logging removed
     }
   }
 
@@ -20,7 +20,6 @@ module.exports = class CustomSlidesPlugin extends Plugin {
       hideNavigateDown: true,
       hideCloseBtn: true,
       progressHeight: 10,
-      customCSS: "",
       leftAlignBullets: false,
     };
     const savedSettings = await this.loadData();
@@ -77,11 +76,10 @@ module.exports = class CustomSlidesPlugin extends Plugin {
       cssContent += ".reveal ol, .reveal dl, .reveal ul { display: block; text-align: left; margin: 0 0 0 1em; }\n";
     }
 
-    // Append custom CSS
-    cssContent += this.settings.customCSS;
-
-    style.textContent = cssContent;
-    document.head.appendChild(style);
+    if (cssContent) {
+      style.textContent = cssContent;
+      document.head.appendChild(style);
+    }
   }
 
   setupModeObserver() {
@@ -91,22 +89,19 @@ module.exports = class CustomSlidesPlugin extends Plugin {
     const observer = new MutationObserver((mutations, obs) => {
       try {
         const reveal = document.querySelector(".reveal");
-        console.log("Mode check:", { reveal: !!reveal, isInSlidesMode });
 
         if (reveal && !isInSlidesMode) {
-          console.log("Slides mode detected, switching to reading mode");
           const activeLeaf = this.app.workspace.activeLeaf;
           if (activeLeaf) {
             previousMode = activeLeaf.getViewState().mode;
+            this.app.workspace.setActiveLeaf(activeLeaf, { active: true });
+            activeLeaf.setViewState({
+              type: "markdown",
+              state: { mode: "preview" },
+            });
+            isInSlidesMode = true;
           }
-          this.app.workspace.setActiveLeaf(activeLeaf, { active: true });
-          this.app.workspace.activeLeaf.setViewState({
-            type: "markdown",
-            state: { mode: "preview" },
-          });
-          isInSlidesMode = true;
         } else if (!reveal && isInSlidesMode) {
-          console.log("Exiting Slides mode detected, restoring previous mode:", previousMode);
           const activeLeaf = this.app.workspace.activeLeaf;
           if (activeLeaf) {
             this.app.workspace.setActiveLeaf(activeLeaf, { active: true });
@@ -114,23 +109,21 @@ module.exports = class CustomSlidesPlugin extends Plugin {
               type: "markdown",
               state: { mode: previousMode || "source" },
             }).then(() => {
-              console.log("Mode restoration attempted");
               isInSlidesMode = false;
-            }).catch(e => console.error("Mode restoration error:", e));
+            });
           }
         }
       } catch (e) {
-        console.error("Mode observer error:", e);
+        // Logging removed
       }
     });
 
     observer.observe(document.body, { childList: true, subtree: true });
-    console.log("Mode observer started");
+    this.register(observer);
 
     // Fallback timer to check for exit
-    const checkExitInterval = setInterval(() => {
+    this.registerInterval(window.setInterval(() => {
       if (isInSlidesMode && !document.querySelector(".reveal")) {
-        console.log("Fallback: Exiting Slides mode detected, restoring previous mode:", previousMode);
         const activeLeaf = this.app.workspace.activeLeaf;
         if (activeLeaf) {
           this.app.workspace.setActiveLeaf(activeLeaf, { active: true });
@@ -138,15 +131,11 @@ module.exports = class CustomSlidesPlugin extends Plugin {
             type: "markdown",
             state: { mode: previousMode || "source" },
           }).then(() => {
-            console.log("Fallback mode restoration attempted");
             isInSlidesMode = false;
-          }).catch(e => console.error("Fallback restoration error:", e));
+          });
         }
       }
-    }, 1000); // Check every 1 second
-
-    // Cleanup interval on unload
-    this.register(() => clearInterval(checkExitInterval));
+    }, 1000));
   }
 
   addSettingsTab() {
@@ -154,8 +143,7 @@ module.exports = class CustomSlidesPlugin extends Plugin {
   }
 
   onunload() {
-    const observer = document.querySelector("style[data-custom-slides]")?.parentElement?.querySelector("mutation-observer"); // Approximate, adjust as needed
-    if (observer) observer.disconnect();
+    // Cleanup handled by registered observer and interval
   }
 };
 
@@ -170,10 +158,8 @@ class CustomSlidesSettingTab extends PluginSettingTab {
 
     containerEl.empty();
 
-    containerEl.createEl("h2", { text: "Custom Slides Settings" });
-
     new Setting(containerEl)
-      .setName("Hide Left Navigation Arrow")
+      .setName("Hide left navigation arrow")
       .setDesc("Toggle visibility of the left navigation arrow.")
       .addToggle(toggle => toggle
         .setValue(this.plugin.settings.hideNavigateLeft)
@@ -183,7 +169,7 @@ class CustomSlidesSettingTab extends PluginSettingTab {
         }));
 
     new Setting(containerEl)
-      .setName("Hide Right Navigation Arrow")
+      .setName("Hide right navigation arrow")
       .setDesc("Toggle visibility of the right navigation arrow.")
       .addToggle(toggle => toggle
         .setValue(this.plugin.settings.hideNavigateRight)
@@ -193,7 +179,7 @@ class CustomSlidesSettingTab extends PluginSettingTab {
         }));
 
     new Setting(containerEl)
-      .setName("Hide Up Navigation Arrow")
+      .setName("Hide up navigation arrow")
       .setDesc("Toggle visibility of the up navigation arrow.")
       .addToggle(toggle => toggle
         .setValue(this.plugin.settings.hideNavigateUp)
@@ -203,7 +189,7 @@ class CustomSlidesSettingTab extends PluginSettingTab {
         }));
 
     new Setting(containerEl)
-      .setName("Hide Down Navigation Arrow")
+      .setName("Hide down navigation arrow")
       .setDesc("Toggle visibility of the down navigation arrow.")
       .addToggle(toggle => toggle
         .setValue(this.plugin.settings.hideNavigateDown)
@@ -213,7 +199,7 @@ class CustomSlidesSettingTab extends PluginSettingTab {
         }));
 
     new Setting(containerEl)
-      .setName("Hide Close Button")
+      .setName("Hide close button")
       .setDesc("Toggle visibility of the close button.")
       .addToggle(toggle => toggle
         .setValue(this.plugin.settings.hideCloseBtn)
@@ -223,7 +209,7 @@ class CustomSlidesSettingTab extends PluginSettingTab {
         }));
 
     new Setting(containerEl)
-      .setName("Left-Align Lists")
+      .setName("Left-align lists")
       .setDesc("Toggle to left-align bulleted and numbered lists in presentation mode.")
       .addToggle(toggle => toggle
         .setValue(this.plugin.settings.leftAlignBullets)
@@ -233,7 +219,7 @@ class CustomSlidesSettingTab extends PluginSettingTab {
         }));
 
     new Setting(containerEl)
-      .setName("Progress Bar Height")
+      .setName("Progress bar height")
       .setDesc("Set the height of the progress bar in pixels.")
       .addText(text => text
         .setPlaceholder("Enter height in pixels")
@@ -245,16 +231,5 @@ class CustomSlidesSettingTab extends PluginSettingTab {
             await this.plugin.saveSettings();
           }
         }));
-
-    new Setting(containerEl)
-      .setName("Custom CSS")
-      .setDesc("Enter custom CSS to override default styles.")
-      .addTextArea(text => text
-        .setPlaceholder("e.g., .reveal { background: black; }")
-        .setValue(this.plugin.settings.customCSS)
-        .onChange(async (value) => {
-          this.plugin.settings.customCSS = value;
-          await this.plugin.saveSettings();
-        }));
   }
-}
+};
