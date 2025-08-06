@@ -1,18 +1,33 @@
-/* Default structural styles for reveal.js slides */
+/* Base styles for reveal.js slides */
 .reveal .controls .navigate-left,
 .reveal .controls .navigate-right,
 .reveal .controls .navigate-up,
 .reveal .controls .navigate-down,
 .slides-close-btn {
-  display: block; /* Default visibility, overridden by dynamic styles */
+  display: block; /* Default behavior */
+}
+
+/* Modifier styles based on settings */
+.hide-navigate-left .reveal .controls .navigate-left,
+.hide-navigate-right .reveal .controls .navigate-right,
+.hide-navigate-up .reveal .controls .navigate-up,
+.hide-navigate-down .reveal .controls .navigate-down,
+.hide-close-btn .slides-close-btn {
+  display: none; /* Modified behavior */
 }
 
 .reveal .progress {
   height: var(--progress-height, 10px); /* Default height, updated dynamically */
 }
 
-.reveal ol,
-.reveal dl,
-.reveal ul {
-  display: block; /* Default display, left-align added dynamically */
+.left-align-bullets .reveal ol,
+.left-align-bullets .reveal dl,
+.left-align-bullets .reveal ul {
+  text-align: left;
+  margin: 0 0 0 1em;
+}
+
+/* Ensure styles apply to the body */
+body {
+  /* Dynamic classes (e.g., hide-navigate-left) will be toggled by the plugin */
 }

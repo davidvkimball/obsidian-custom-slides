@@ -1,10 +1,13 @@
 const { Plugin, WorkspaceLeaf, ViewState, Setting, PluginSettingTab } = require("obsidian");
 
+// Import styles.css (handled by build process)
+require("./styles.css");
+
 module.exports = class CustomSlidesPlugin extends Plugin {
   async onload() {
     try {
       await this.loadSettings();
-      this.addStyle();
+      this.applyDynamicStyles();
       this.setupModeObserver();
       this.addSettingsTab();
     } catch (e) {
@@ -28,58 +31,21 @@ module.exports = class CustomSlidesPlugin extends Plugin {
 
   async saveSettings() {
     await this.saveData(this.settings);
-    this.addStyle(); // Reapply styles after saving
+    this.applyDynamicStyles(); // Reapply dynamic styles after saving
   }
 
-  addStyle() {
-    // Remove existing style element to prevent duplication
-    const existingStyle = document.querySelector("style[data-custom-slides]");
-    if (existingStyle) existingStyle.remove();
+  applyDynamicStyles() {
+    const body = document.body;
+    // Toggle modifier classes based on settings
+    body.classList.toggle("hide-navigate-left", this.settings.hideNavigateLeft);
+    body.classList.toggle("hide-navigate-right", this.settings.hideNavigateRight);
+    body.classList.toggle("hide-navigate-up", this.settings.hideNavigateUp);
+    body.classList.toggle("hide-navigate-down", this.settings.hideNavigateDown);
+    body.classList.toggle("hide-close-btn", this.settings.hideCloseBtn);
+    body.classList.toggle("left-align-bullets", this.settings.leftAlignBullets);
 
-    const style = document.createElement("style");
-    style.setAttribute("data-custom-slides", "true"); // Add identifier for easy removal
-
-    let cssContent = "";
-
-    // Apply display rules for navigation and close button
-    if (this.settings.hideNavigateLeft) {
-      cssContent += ".reveal .controls .navigate-left { display: none !important; }\n";
-    } else {
-      cssContent += ".reveal .controls .navigate-left { display: block !important; }\n";
-    }
-    if (this.settings.hideNavigateRight) {
-      cssContent += ".reveal .controls .navigate-right { display: none !important; }\n";
-    } else {
-      cssContent += ".reveal .controls .navigate-right { display: block !important; }\n";
-    }
-    if (this.settings.hideNavigateUp) {
-      cssContent += ".reveal .controls .navigate-up { display: none !important; }\n";
-    } else {
-      cssContent += ".reveal .controls .navigate-up { display: block !important; }\n";
-    }
-    if (this.settings.hideNavigateDown) {
-      cssContent += ".reveal .controls .navigate-down { display: none !important; }\n";
-    } else {
-      cssContent += ".reveal .controls .navigate-down { display: block !important; }\n";
-    }
-    if (this.settings.hideCloseBtn) {
-      cssContent += ".slides-close-btn { display: none !important; }\n";
-    } else {
-      cssContent += ".slides-close-btn { display: block !important; }\n";
-    }
-
-    // Apply progress height
-    cssContent += `.reveal .progress { height: ${this.settings.progressHeight}px !important; }\n`;
-
-    // Apply left-align for bullets if enabled
-    if (this.settings.leftAlignBullets) {
-      cssContent += ".reveal ol, .reveal dl, .reveal ul { display: block; text-align: left; margin: 0 0 0 1em; }\n";
-    }
-
-    if (cssContent) {
-      style.textContent = cssContent;
-      document.head.appendChild(style);
-    }
+    // Set dynamic custom property for progress height
+    body.style.setProperty("--progress-height", `${this.settings.progressHeight}px`);
   }
 
   setupModeObserver() {
@@ -119,7 +85,7 @@ module.exports = class CustomSlidesPlugin extends Plugin {
     });
 
     observer.observe(document.body, { childList: true, subtree: true });
-    this.register(observer);
+    this.register(() => observer.disconnect());
 
     // Fallback timer to check for exit
     this.registerInterval(window.setInterval(() => {
