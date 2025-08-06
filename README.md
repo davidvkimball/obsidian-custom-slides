@@ -8,7 +8,6 @@ This plugin allows you to customize the Slides Obsidian core plugin (intended fo
 - **Progress Bar Customization**: Adjust the height of the progress bar to suit your aesthetic preferences, with a default of 10 pixels (up from the default 3 pixels).
 - **Left-Align Lists**: Enable left-aligned bulleted and numbered lists in presentation mode for a cleaner, more readable layout, with a 1em left margin for proper spacing.
 - **Immediate Keyboard Input**: Automatically switches to reading mode when entering Slides mode so spacebar and arrows work without having to click your presentation, and restores your previous mode (e.g., edit or source) when exiting.
-- **Custom CSS Support**: Add your own CSS rules to override default styles and further personalize your slides.
 
 ## Demo
 
