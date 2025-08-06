@@ -24,9 +24,7 @@ This plugin allows you to customize the Slides Obsidian core plugin (intended fo
 ## Usage
 
 1. **Enable the Plugin**: Activate it in the Community Plugins settings.
-2. **Configure Settings**:
-   - Use the settings tab to toggle navigation arrow visibility, set the progress bar height, and enable left-aligned lists.
-   - Add custom CSS in the provided text area for additional styling.
+2. **Configure Settings**: Use the settings tab to toggle navigation arrow visibility, set the progress bar height, and enable left-aligned lists.
 3. **Start a Presentation**: Open a note with Slides-compatible Markdown (e.g., using `---` for slides) and use the "Slides: Start Presentation" command from the Command Palette.
 4. **Using Keys for Navigation**: You can use the spacebar and arrow keys to go between slides as normal and the ESC key will exit your presentation.
 
