@@ -1,6 +1,8 @@
-## Overview
+## Custom Slides for Obsidian
 
 This plugin allows you to customize the Slides Obsidian core plugin (intended for use on the desktop app only). 
+
+![obsidian-custom-slides-plugin-demo](https://github.com/user-attachments/assets/7298ce1a-e354-4976-a4c5-61faa5d80f4e)
 
 ## Features
 
@@ -8,11 +10,6 @@ This plugin allows you to customize the Slides Obsidian core plugin (intended fo
 - **Progress Bar Customization**: Adjust the height of the progress bar to suit your aesthetic preferences, with a default of 10 pixels (up from the default 3 pixels).
 - **Left-Align Lists**: Enable left-aligned bulleted and numbered lists in presentation mode for a cleaner, more readable layout, with a 1em left margin for proper spacing.
 - **Immediate Keyboard Input**: Automatically switches to reading mode when entering Slides mode so spacebar and arrows work without having to click your presentation, and restores your previous mode (e.g., edit or source) when exiting.
-
-## Demo
-
-![obsidian-custom-slides-plugin-demo](https://github.com/user-attachments/assets/7298ce1a-e354-4976-a4c5-61faa5d80f4e)
-
 
 ## Installation
 
