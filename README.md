@@ -1,4 +1,4 @@
-## Custom Slides for Obsidian
+# Custom Slides for Obsidian
 
 This plugin allows you to customize the Slides Obsidian core plugin (intended for use on the desktop app only). 
 
