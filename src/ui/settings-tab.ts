@@ -87,5 +87,15 @@ export class CustomSlidesSettingTab extends PluginSettingTab {
             await this.plugin.saveSettings();
           }
         }));
+
+    new Setting(containerEl)
+      .setName("Use Obsidian font settings")
+      .setDesc("Use the same font as your Obsidian text settings in slides.")
+      .addToggle(toggle => toggle
+        .setValue(this.plugin.settings.respectObsidianSettings)
+        .onChange(async (value) => {
+          this.plugin.settings.respectObsidianSettings = value;
+          await this.plugin.saveSettings();
+        }));
   }
 }

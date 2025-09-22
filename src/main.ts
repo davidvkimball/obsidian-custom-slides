@@ -39,6 +39,23 @@ export default class CustomSlidesPlugin extends Plugin {
 
     // Set dynamic custom property for progress height
     body.style.setProperty("--progress-height", `${this.settings.progressHeight}px`);
+
+    // Apply font settings
+    this.applyFontStyles();
+  }
+
+  private applyFontStyles(): void {
+    const body = document.body;
+    
+    if (this.settings.respectObsidianSettings) {
+      // Apply Obsidian's font settings directly to reveal.js slides
+      body.style.setProperty("--slides-font-interface", "var(--font-interface)");
+      body.style.setProperty("--slides-font-text", "var(--font-text)");
+    } else {
+      // Reset to default (reveal.js defaults)
+      body.style.removeProperty("--slides-font-interface");
+      body.style.removeProperty("--slides-font-text");
+    }
   }
 
   private setupModeObserver(): void {

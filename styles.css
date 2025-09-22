@@ -27,6 +27,26 @@
   margin: 0 0 0 1em;
 }
 
+/* Font inheritance for slides */
+.reveal {
+  font-family: var(--slides-font-text, inherit) !important;
+}
+
+.reveal h1,
+.reveal h2,
+.reveal h3,
+.reveal h4,
+.reveal h5,
+.reveal h6 {
+  font-family: var(--slides-font-interface, var(--slides-font-text, inherit)) !important;
+}
+
+.reveal .controls,
+.reveal .progress,
+.reveal .slide-number {
+  font-family: var(--slides-font-interface, var(--slides-font-text, inherit)) !important;
+}
+
 /* Ensure styles apply to the body */
 body {
   /* Dynamic classes (e.g., hide-navigate-left) will be toggled by the plugin */

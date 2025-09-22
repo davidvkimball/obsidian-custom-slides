@@ -6,6 +6,7 @@ export interface CustomSlidesSettings {
   hideCloseBtn: boolean;
   progressHeight: number;
   leftAlignBullets: boolean;
+  respectObsidianSettings: boolean;
 }
 
 export const DEFAULT_SETTINGS: CustomSlidesSettings = {
@@ -16,4 +17,5 @@ export const DEFAULT_SETTINGS: CustomSlidesSettings = {
   hideCloseBtn: true,
   progressHeight: 10,
   leftAlignBullets: false,
+  respectObsidianSettings: true,
 };
