@@ -3,9 +3,6 @@ import { CustomSlidesSettings, DEFAULT_SETTINGS } from "./settings";
 import { CustomSlidesSettingTab } from "./ui/settings-tab";
 import { ModeObserver } from "./utils/mode-observer";
 
-// Import styles.css (handled by build process)
-import "../styles.css";
-
 export default class CustomSlidesPlugin extends Plugin {
   settings: CustomSlidesSettings;
   private modeObserver: ModeObserver;

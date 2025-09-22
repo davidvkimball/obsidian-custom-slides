@@ -1,6 +1,6 @@
 {
 	"name": "custom-slides",
-	"version": "1.0.5",
+	"version": "1.0.6",
 	"description": "Customizes the Slides core plugin navigation, styles, and behavior.",
 	"main": "main.js",
 	"scripts": {
