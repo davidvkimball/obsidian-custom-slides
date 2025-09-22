@@ -4,6 +4,9 @@ This plugin allows you to customize the Slides Obsidian core plugin (intended fo
 
 ![obsidian-custom-slides-plugin-demo](https://github.com/user-attachments/assets/7298ce1a-e354-4976-a4c5-61faa5d80f4e)
 
+> [!NOTE]
+> You must have the Slides core plugin enabled for this plugin to work.
+
 ## Features
 
 - **Customizable Navigation Controls**: Toggle the visibility of left, right, up, and down navigation arrows to remove visual clutter from your presentations.
