@@ -1,11 +1,11 @@
 {
 	"name": "custom-slides",
-	"version": "1.0.4",
+	"version": "1.0.5",
 	"description": "Customizes the Slides core plugin navigation, styles, and behavior.",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
-		"build": "esbuild main.ts --bundle --outfile=main.js --sourcemap --external:obsidian --external:*.css",
+		"build": "node esbuild.config.mjs production",
 		"version": "node version-bump.mjs && git add manifest.json versions.json"
 	},
 	"keywords": ["slides"],
