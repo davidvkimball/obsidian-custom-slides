@@ -19,10 +19,16 @@ This plugin allows you to customize the Slides [Obsidian](https://obsidian.md) c
 
 ## Installation
 
-1. Clone or download this plugin into your Obsidian vault’s `.obsidian/plugins/` directory.
-2. Ensure the `manifest.json` and `main.js` files are placed in the `custom-slides` folder.
-3. Open Obsidian, go to **Settings > Community Plugins**, and enable the "Custom Slides" plugin.
-4. Click the settings icon to configure the plugin options.
+### Community Plugins Search
+
+1. In Obsidian, go to Settings > Community plugins (enable it if you haven't already).
+2. Search for "Custom Slides" and click Install and then Enable.
+
+### Manual
+
+1. Download the latest release from the [Releases page](https://github.com/davidvkimball/obsidian-custom-slides/releases) and navigate to your Obsidian vault's `.obsidian/plugins/` directory.
+2. Create a new folder called `custom-slides` and ensure `manifest.json`, `main.js`, and `styles.css` are in there.
+3. In Obsidian, go to Settings > Community plugins (enable it if you haven't already) and then enable "Custom Slides."
 
 ## Usage
 
