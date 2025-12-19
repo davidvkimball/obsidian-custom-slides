@@ -13,13 +13,14 @@ export default class CustomSlidesPlugin extends Plugin {
       this.applyDynamicStyles();
       this.setupModeObserver();
       this.addSettingsTab();
-    } catch (e) {
+    } catch {
       // Silently handle errors
     }
   }
 
   async loadSettings(): Promise<void> {
-    this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+    const data = (await this.loadData()) as Partial<CustomSlidesSettings> | null;
+    this.settings = Object.assign({}, DEFAULT_SETTINGS, data);
   }
 
   async saveSettings(): Promise<void> {
@@ -49,7 +50,10 @@ export default class CustomSlidesPlugin extends Plugin {
     
     if (this.settings.respectObsidianSettings) {
       // Apply Obsidian's font settings directly to reveal.js slides
+      // Using setProperty for CSS custom properties (dynamic values)
+      // eslint-disable-next-line obsidianmd/no-static-styles-assignment
       body.style.setProperty("--slides-font-interface", "var(--font-interface)");
+      // eslint-disable-next-line obsidianmd/no-static-styles-assignment
       body.style.setProperty("--slides-font-text", "var(--font-text)");
     } else {
       // Reset to default (reveal.js defaults)

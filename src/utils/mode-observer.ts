@@ -1,4 +1,4 @@
-import { Plugin } from "obsidian";
+import { MarkdownView, Plugin } from "obsidian";
 
 export class ModeObserver {
   private plugin: Plugin;
@@ -16,21 +16,24 @@ export class ModeObserver {
         const reveal = document.querySelector(".reveal");
 
         if (reveal && !this.isInSlidesMode) {
-          const activeLeaf = this.plugin.app.workspace.activeLeaf;
-          if (activeLeaf) {
-            this.previousMode = activeLeaf.getViewState().mode;
-            this.plugin.app.workspace.setActiveLeaf(activeLeaf, { active: true });
-            activeLeaf.setViewState({
+          const activeView = this.plugin.app.workspace.getActiveViewOfType(MarkdownView);
+          if (activeView) {
+            const leaf = activeView.leaf;
+            const viewState = leaf.getViewState();
+            this.previousMode = viewState.state?.mode as string | null ?? null;
+            this.plugin.app.workspace.setActiveLeaf(leaf, { active: true });
+            void leaf.setViewState({
               type: "markdown",
               state: { mode: "preview" },
             });
             this.isInSlidesMode = true;
           }
         } else if (!reveal && this.isInSlidesMode) {
-          const activeLeaf = this.plugin.app.workspace.activeLeaf;
-          if (activeLeaf) {
-            this.plugin.app.workspace.setActiveLeaf(activeLeaf, { active: true });
-            activeLeaf.setViewState({
+          const activeView = this.plugin.app.workspace.getActiveViewOfType(MarkdownView);
+          if (activeView) {
+            const leaf = activeView.leaf;
+            this.plugin.app.workspace.setActiveLeaf(leaf, { active: true });
+            void leaf.setViewState({
               type: "markdown",
               state: { mode: this.previousMode || "source" },
             }).then(() => {
@@ -38,7 +41,7 @@ export class ModeObserver {
             });
           }
         }
-      } catch (e) {
+      } catch {
         // Silently handle errors
       }
     });
@@ -49,12 +52,13 @@ export class ModeObserver {
     // Fallback timer to check for exit
     this.plugin.registerInterval(window.setInterval(() => {
       if (this.isInSlidesMode && !document.querySelector(".reveal")) {
-        const activeLeaf = this.plugin.app.workspace.activeLeaf;
-        if (activeLeaf) {
-          this.plugin.app.workspace.setActiveLeaf(activeLeaf, { active: true });
-          activeLeaf.setViewState({
+        const activeView = this.plugin.app.workspace.getActiveViewOfType(MarkdownView);
+        if (activeView) {
+          const leaf = activeView.leaf;
+          this.plugin.app.workspace.setActiveLeaf(leaf, { active: true });
+          void leaf.setViewState({
             type: "markdown",
-            state: { mode: this.previousMode || "source" },
+            state: { mode: (this.previousMode as "source" | "preview" | "live") || "source" },
           }).then(() => {
             this.isInSlidesMode = false;
           });
