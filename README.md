@@ -22,7 +22,7 @@ This plugin allows you to customize the Slides [Obsidian](https://obsidian.md) c
 ### Community Plugins Search
 
 1. In Obsidian, go to Settings > Community plugins (enable it if you haven't already).
-2. Search for "Custom Slides" and click Install and then Enable.
+2. Search for [Custom Slides](https://obsidian.md/plugins?id=custom-slides) and click Install and then Enable.
 
 ### Manual
 
