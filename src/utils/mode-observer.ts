@@ -21,7 +21,7 @@ export class ModeObserver {
             const leaf = activeView.leaf;
             const viewState = leaf.getViewState();
             this.previousMode = viewState.state?.mode as string | null ?? null;
-            this.plugin.app.workspace.setActiveLeaf(leaf, { active: true });
+            this.plugin.app.workspace.setActiveLeaf(leaf);
             void leaf.setViewState({
               type: "markdown",
               state: { mode: "preview" },
@@ -32,7 +32,7 @@ export class ModeObserver {
           const activeView = this.plugin.app.workspace.getActiveViewOfType(MarkdownView);
           if (activeView) {
             const leaf = activeView.leaf;
-            this.plugin.app.workspace.setActiveLeaf(leaf, { active: true });
+            this.plugin.app.workspace.setActiveLeaf(leaf);
             void leaf.setViewState({
               type: "markdown",
               state: { mode: this.previousMode || "source" },
@@ -55,7 +55,7 @@ export class ModeObserver {
         const activeView = this.plugin.app.workspace.getActiveViewOfType(MarkdownView);
         if (activeView) {
           const leaf = activeView.leaf;
-          this.plugin.app.workspace.setActiveLeaf(leaf, { active: true });
+          this.plugin.app.workspace.setActiveLeaf(leaf);
           void leaf.setViewState({
             type: "markdown",
             state: { mode: (this.previousMode as "source" | "preview" | "live") || "source" },

@@ -16,7 +16,7 @@ export class CustomSlidesSettingTab extends PluginSettingTab {
     containerEl.empty();
 
     // First group (no heading) - all settings related to customizing slides presentation
-    const generalGroup = createSettingsGroup(containerEl);
+    const generalGroup = createSettingsGroup(containerEl, undefined, 'custom-slides');
 
     generalGroup.addSetting((setting) => {
       setting
