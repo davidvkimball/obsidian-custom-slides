@@ -37,6 +37,19 @@ body.is-panning {
   user-select: none;
 }
 
+/* Callout icon size matching in presentation mode */
+.reveal .callout-title {
+  align-items: center; /* Better alignment for large icons */
+  gap: 0.5em; /* Add more space between icon and title */
+}
+
+.reveal .callout-icon .svg-icon {
+  width: 0.9em; /* Made slightly smaller than previous 1.1em */
+  height: 0.9em;
+  /* Ensure the stroke width scales properly too */
+  stroke-width: 2.2; 
+}
+
 /* Ensure the slides can be transformed independently without being clipped */
 .reveal .slides section {
   /* This ensures our independent translate/scale properties apply correctly to the slide itself */
