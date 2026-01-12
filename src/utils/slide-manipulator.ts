@@ -152,6 +152,12 @@ export class SlideManipulator {
   };
 
   private handleMouseMove = (e: MouseEvent): void => {
+    // Focus recovery: If an iframe (like YouTube) has focus, but the mouse is moving 
+    // over our container, steal focus back so keyboard navigation works.
+    if (document.activeElement instanceof HTMLIFrameElement) {
+      window.focus();
+    }
+
     if (!this.isPanning || !this.slidesElement) return;
 
     const deltaX = e.clientX - this.lastMouseX;

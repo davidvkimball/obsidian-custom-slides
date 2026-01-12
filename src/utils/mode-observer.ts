@@ -33,12 +33,18 @@ export class ModeObserver {
       const reveal = document.querySelector(".reveal");
 
       if (reveal && !this.isInSlidesMode) {
+        // Find the specific window (document) where the .reveal element exists
+        const revealDocument = reveal.ownerDocument;
         const activeView = this.plugin.app.workspace.getActiveViewOfType(MarkdownView);
-        if (activeView) {
+        
+        if (activeView && activeView.containerEl.ownerDocument === revealDocument) {
           const leaf = activeView.leaf;
           const viewState = leaf.getViewState();
           this.previousMode = viewState.state?.mode as string | null ?? null;
-          this.plugin.app.workspace.setActiveLeaf(leaf);
+          
+          // Ensure we are operating on the correct window's workspace
+          this.plugin.app.workspace.setActiveLeaf(leaf, { focus: true });
+          
           void leaf.setViewState({
             type: "markdown",
             state: { mode: "preview" },
