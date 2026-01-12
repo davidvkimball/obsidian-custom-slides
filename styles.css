@@ -51,6 +51,18 @@ body.is-panning {
 }
 
 /* Ensure the slides can be transformed independently without being clipped */
+.reveal,
+.reveal .slides,
+.reveal .slides section {
+  /* Allow content to be panned/zoomed outside the default container bounds */
+  overflow: visible !important;
+}
+
+/* Ensure tables and other large content can expand beyond the slide width */
+.reveal .slides section > * {
+  max-width: none !important;
+}
+
 .reveal .slides section {
   /* This ensures our independent translate/scale properties apply correctly to the slide itself */
   transition: transform 0.8s ease, opacity 0.8s ease; 
