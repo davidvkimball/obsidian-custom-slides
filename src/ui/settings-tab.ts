@@ -20,6 +20,18 @@ export class CustomSlidesSettingTab extends PluginSettingTab {
 
     generalGroup.addSetting((setting) => {
       setting
+        .setName("Use WASD for navigation")
+        .setDesc("Use W, A, S, and D keys to navigate slides in addition to arrow keys.")
+        .addToggle(toggle => toggle
+          .setValue(this.plugin.settings.enableWASD)
+          .onChange(async (value) => {
+            this.plugin.settings.enableWASD = value;
+            await this.plugin.saveSettings();
+          }));
+    });
+
+    generalGroup.addSetting((setting) => {
+      setting
         .setName("Hide left navigation arrow")
         .setDesc("Toggle visibility of the left navigation arrow.")
         .addToggle(toggle => toggle
@@ -114,6 +126,30 @@ export class CustomSlidesSettingTab extends PluginSettingTab {
           .setValue(this.plugin.settings.respectObsidianSettings)
           .onChange(async (value) => {
             this.plugin.settings.respectObsidianSettings = value;
+            await this.plugin.saveSettings();
+          }));
+    });
+
+    generalGroup.addSetting((setting) => {
+      setting
+        .setName("Enable pan")
+        .setDesc("Allow clicking and dragging to move slides around.")
+        .addToggle(toggle => toggle
+          .setValue(this.plugin.settings.enablePan)
+          .onChange(async (value) => {
+            this.plugin.settings.enablePan = value;
+            await this.plugin.saveSettings();
+          }));
+    });
+
+    generalGroup.addSetting((setting) => {
+      setting
+        .setName("Enable zoom")
+        .setDesc("Allow using the mouse wheel to zoom in and out of slides.")
+        .addToggle(toggle => toggle
+          .setValue(this.plugin.settings.enableZoom)
+          .onChange(async (value) => {
+            this.plugin.settings.enableZoom = value;
             await this.plugin.saveSettings();
           }));
     });

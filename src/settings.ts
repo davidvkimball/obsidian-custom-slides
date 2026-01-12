@@ -7,6 +7,9 @@ export interface CustomSlidesSettings {
   progressHeight: number;
   leftAlignBullets: boolean;
   respectObsidianSettings: boolean;
+  enablePan: boolean;
+  enableZoom: boolean;
+  enableWASD: boolean;
 }
 
 export const DEFAULT_SETTINGS: CustomSlidesSettings = {
@@ -18,4 +21,7 @@ export const DEFAULT_SETTINGS: CustomSlidesSettings = {
   progressHeight: 10,
   leftAlignBullets: false,
   respectObsidianSettings: true,
+  enablePan: true,
+  enableZoom: true,
+  enableWASD: false,
 };

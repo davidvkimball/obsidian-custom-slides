@@ -2,15 +2,24 @@ import { Plugin } from "obsidian";
 import { CustomSlidesSettings, DEFAULT_SETTINGS } from "./settings";
 import { CustomSlidesSettingTab } from "./ui/settings-tab";
 import { ModeObserver } from "./utils/mode-observer";
+import { SlideManipulator } from "./utils/slide-manipulator";
 
 export default class CustomSlidesPlugin extends Plugin {
   settings!: CustomSlidesSettings;
   private modeObserver!: ModeObserver;
+  private slideManipulator!: SlideManipulator;
 
   async onload(): Promise<void> {
     try {
       await this.loadSettings();
-      this.applyDynamicStyles();
+
+      this.slideManipulator = new SlideManipulator(this);
+
+      // Ensure styles are applied after the layout is ready
+      this.app.workspace.onLayoutReady(() => {
+        this.applyDynamicStyles();
+      });
+
       this.setupModeObserver();
       this.addSettingsTab();
     } catch {
@@ -37,6 +46,8 @@ export default class CustomSlidesPlugin extends Plugin {
     body.classList.toggle("hide-navigate-down", this.settings.hideNavigateDown);
     body.classList.toggle("hide-close-btn", this.settings.hideCloseBtn);
     body.classList.toggle("left-align-bullets", this.settings.leftAlignBullets);
+    body.classList.toggle("enable-pan", this.settings.enablePan);
+    body.classList.toggle("enable-zoom", this.settings.enableZoom);
 
     // Set dynamic custom property for progress height
     body.style.setProperty("--progress-height", `${this.settings.progressHeight}px`);
@@ -71,7 +82,67 @@ export default class CustomSlidesPlugin extends Plugin {
     this.addSettingTab(new CustomSlidesSettingTab(this.app, this));
   }
 
+  public onEnterSlidesMode(): void {
+    this.slideManipulator.setup();
+    if (this.settings.enableWASD) {
+      window.addEventListener("keydown", this.handleWASD, true);
+    }
+  }
+
+  public onExitSlidesMode(): void {
+    this.slideManipulator.destroy();
+    window.removeEventListener("keydown", this.handleWASD, true);
+  }
+
+  private handleWASD = (e: KeyboardEvent): void => {
+    if (!this.settings.enableWASD) return;
+
+    const key = e.key.toLowerCase();
+    let arrowKey = "";
+
+    switch (key) {
+      case "w": arrowKey = "ArrowUp"; break;
+      case "a": arrowKey = "ArrowLeft"; break;
+      case "s": arrowKey = "ArrowDown"; break;
+      case "d": arrowKey = "ArrowRight"; break;
+      default: return;
+    }
+
+    // Dispatch a new KeyboardEvent that looks like the arrow key
+    const event = new KeyboardEvent("keydown", {
+      key: arrowKey,
+      code: arrowKey,
+      keyCode: arrowKey === "ArrowLeft" ? 37 : arrowKey === "ArrowUp" ? 38 : arrowKey === "ArrowRight" ? 39 : 40,
+      which: arrowKey === "ArrowLeft" ? 37 : arrowKey === "ArrowUp" ? 38 : arrowKey === "ArrowRight" ? 39 : 40,
+      bubbles: true,
+      cancelable: true
+    });
+
+    // We stop propagation of the original WASD key and dispatch the arrow key instead
+    e.stopPropagation();
+    e.preventDefault();
+    document.dispatchEvent(event);
+  };
+
   onunload(): void {
-    // Cleanup handled by registered observer and interval
+    const body = document.body;
+
+    // Remove all modifier classes
+    body.classList.remove(
+      "hide-navigate-left",
+      "hide-navigate-right",
+      "hide-navigate-up",
+      "hide-navigate-down",
+      "hide-close-btn",
+      "left-align-bullets",
+      "enable-pan",
+      "enable-zoom",
+      "is-panning"
+    );
+
+    // Remove CSS custom properties
+    body.style.removeProperty("--progress-height");
+    body.style.removeProperty("--slides-font-interface");
+    body.style.removeProperty("--slides-font-text");
   }
 }
