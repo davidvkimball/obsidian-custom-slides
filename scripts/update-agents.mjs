@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 
 /**
- * Helper script to update .agents/sync-status.json with current date
+ * Helper script to update sync-status.json in the obsidian-ops skill
  * 
  * Usage:
- *   node scripts/update-sync-status.mjs [description]
+ *   node scripts/update-agents.mjs [description]
  * 
  * Examples:
- *   node scripts/update-sync-status.mjs "Full sync of all repos"
- *   node scripts/update-sync-status.mjs "Updated project-overview.md from sample plugin"
+ *   node scripts/update-agents.mjs "Full sync of all repos"
+ *   node scripts/update-agents.mjs "Updated project-overview.md from sample plugin"
  */
 
 import { readFileSync, writeFileSync } from 'fs';
@@ -19,8 +19,13 @@ const scriptDir = dirname(fileURLToPath(import.meta.url));
 const projectRoot = join(scriptDir, '..');
 const syncStatusPath = join(projectRoot, '.agent', 'skills', 'obsidian-ops', 'references', 'sync-status.json');
 
-// Get current date in YYYY-MM-DD format
-const today = new Date().toISOString().split('T')[0];
+// Get current local date in YYYY-MM-DD format
+const now = new Date();
+const today = [
+  now.getFullYear(),
+  String(now.getMonth() + 1).padStart(2, '0'),
+  String(now.getDate()).padStart(2, '0'),
+].join('-');
 
 // Get optional description from command line
 const description = process.argv[2] || 'Sync update';
