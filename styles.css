@@ -103,3 +103,320 @@ body {
 	font-weight: 600;
 	border-bottom: none !important;
 }
+
+/* ============================================
+   Reveal.js Theme Overrides
+   ============================================ */
+
+/* Black theme (default) */
+.slides-theme-black .reveal {
+  background: #191919 !important;
+  color: #fff !important;
+}
+.slides-theme-black .reveal h1,
+.slides-theme-black .reveal h2,
+.slides-theme-black .reveal h3,
+.slides-theme-black .reveal h4,
+.slides-theme-black .reveal h5,
+.slides-theme-black .reveal h6 {
+  color: #fff !important;
+}
+.slides-theme-black .reveal a {
+  color: #42affa !important;
+}
+.slides-theme-black .reveal .progress {
+  background: rgba(255, 255, 255, 0.2) !important;
+}
+.slides-theme-black .reveal .progress span {
+  background: #42affa !important;
+}
+.slides-theme-black .reveal .controls button {
+  color: #42affa !important;
+}
+
+/* White theme */
+.slides-theme-white .reveal {
+  background: #fff !important;
+  color: #222 !important;
+}
+.slides-theme-white .reveal h1,
+.slides-theme-white .reveal h2,
+.slides-theme-white .reveal h3,
+.slides-theme-white .reveal h4,
+.slides-theme-white .reveal h5,
+.slides-theme-white .reveal h6 {
+  color: #222 !important;
+}
+.slides-theme-white .reveal a {
+  color: #2a76dd !important;
+}
+.slides-theme-white .reveal .progress {
+  background: rgba(0, 0, 0, 0.2) !important;
+}
+.slides-theme-white .reveal .progress span {
+  background: #2a76dd !important;
+}
+.slides-theme-white .reveal .controls button {
+  color: #2a76dd !important;
+}
+
+/* League theme */
+.slides-theme-league .reveal {
+  background: #1c1e20 !important;
+  color: #eee !important;
+}
+.slides-theme-league .reveal h1,
+.slides-theme-league .reveal h2,
+.slides-theme-league .reveal h3,
+.slides-theme-league .reveal h4,
+.slides-theme-league .reveal h5,
+.slides-theme-league .reveal h6 {
+  color: #eee !important;
+  text-shadow: 0 0 20px rgba(0, 0, 0, 0.5) !important;
+}
+.slides-theme-league .reveal a {
+  color: #13daec !important;
+}
+.slides-theme-league .reveal .progress {
+  background: rgba(255, 255, 255, 0.2) !important;
+}
+.slides-theme-league .reveal .progress span {
+  background: #13daec !important;
+}
+.slides-theme-league .reveal .controls button {
+  color: #13daec !important;
+}
+
+/* Beige theme */
+.slides-theme-beige .reveal {
+  background: #f7f3de !important;
+  color: #333 !important;
+}
+.slides-theme-beige .reveal h1,
+.slides-theme-beige .reveal h2,
+.slides-theme-beige .reveal h3,
+.slides-theme-beige .reveal h4,
+.slides-theme-beige .reveal h5,
+.slides-theme-beige .reveal h6 {
+  color: #333 !important;
+}
+.slides-theme-beige .reveal a {
+  color: #8b743d !important;
+}
+.slides-theme-beige .reveal .progress {
+  background: rgba(0, 0, 0, 0.2) !important;
+}
+.slides-theme-beige .reveal .progress span {
+  background: #8b743d !important;
+}
+.slides-theme-beige .reveal .controls button {
+  color: #8b743d !important;
+}
+
+/* Night theme */
+.slides-theme-night .reveal {
+  background: #111 !important;
+  color: #eee !important;
+}
+.slides-theme-night .reveal h1,
+.slides-theme-night .reveal h2,
+.slides-theme-night .reveal h3,
+.slides-theme-night .reveal h4,
+.slides-theme-night .reveal h5,
+.slides-theme-night .reveal h6 {
+  color: #eee !important;
+}
+.slides-theme-night .reveal a {
+  color: #e7ad52 !important;
+}
+.slides-theme-night .reveal .progress {
+  background: rgba(255, 255, 255, 0.2) !important;
+}
+.slides-theme-night .reveal .progress span {
+  background: #e7ad52 !important;
+}
+.slides-theme-night .reveal .controls button {
+  color: #e7ad52 !important;
+}
+
+/* Serif theme */
+.slides-theme-serif .reveal {
+  background: #f0f1eb !important;
+  color: #000 !important;
+}
+.slides-theme-serif .reveal h1,
+.slides-theme-serif .reveal h2,
+.slides-theme-serif .reveal h3,
+.slides-theme-serif .reveal h4,
+.slides-theme-serif .reveal h5,
+.slides-theme-serif .reveal h6 {
+  color: #383d3d !important;
+}
+.slides-theme-serif .reveal a {
+  color: #51483d !important;
+}
+.slides-theme-serif .reveal .progress {
+  background: rgba(0, 0, 0, 0.2) !important;
+}
+.slides-theme-serif .reveal .progress span {
+  background: #51483d !important;
+}
+.slides-theme-serif .reveal .controls button {
+  color: #51483d !important;
+}
+
+/* Simple theme */
+.slides-theme-simple .reveal {
+  background: #fff !important;
+  color: #000 !important;
+}
+.slides-theme-simple .reveal h1,
+.slides-theme-simple .reveal h2,
+.slides-theme-simple .reveal h3,
+.slides-theme-simple .reveal h4,
+.slides-theme-simple .reveal h5,
+.slides-theme-simple .reveal h6 {
+  color: #000 !important;
+}
+.slides-theme-simple .reveal a {
+  color: #00008b !important;
+}
+.slides-theme-simple .reveal .progress {
+  background: rgba(0, 0, 0, 0.2) !important;
+}
+.slides-theme-simple .reveal .progress span {
+  background: #00008b !important;
+}
+.slides-theme-simple .reveal .controls button {
+  color: #00008b !important;
+}
+
+/* Solarized theme */
+.slides-theme-solarized .reveal {
+  background: #fdf6e3 !important;
+  color: #657b83 !important;
+}
+.slides-theme-solarized .reveal h1,
+.slides-theme-solarized .reveal h2,
+.slides-theme-solarized .reveal h3,
+.slides-theme-solarized .reveal h4,
+.slides-theme-solarized .reveal h5,
+.slides-theme-solarized .reveal h6 {
+  color: #586e75 !important;
+}
+.slides-theme-solarized .reveal a {
+  color: #268bd2 !important;
+}
+.slides-theme-solarized .reveal .progress {
+  background: rgba(0, 0, 0, 0.2) !important;
+}
+.slides-theme-solarized .reveal .progress span {
+  background: #268bd2 !important;
+}
+.slides-theme-solarized .reveal .controls button {
+  color: #268bd2 !important;
+}
+
+/* Moon theme */
+.slides-theme-moon .reveal {
+  background: #002b36 !important;
+  color: #93a1a1 !important;
+}
+.slides-theme-moon .reveal h1,
+.slides-theme-moon .reveal h2,
+.slides-theme-moon .reveal h3,
+.slides-theme-moon .reveal h4,
+.slides-theme-moon .reveal h5,
+.slides-theme-moon .reveal h6 {
+  color: #eee8d5 !important;
+}
+.slides-theme-moon .reveal a {
+  color: #268bd2 !important;
+}
+.slides-theme-moon .reveal .progress {
+  background: rgba(255, 255, 255, 0.2) !important;
+}
+.slides-theme-moon .reveal .progress span {
+  background: #268bd2 !important;
+}
+.slides-theme-moon .reveal .controls button {
+  color: #268bd2 !important;
+}
+
+/* Dracula theme */
+.slides-theme-dracula .reveal {
+  background: #282a36 !important;
+  color: #f8f8f2 !important;
+}
+.slides-theme-dracula .reveal h1,
+.slides-theme-dracula .reveal h2,
+.slides-theme-dracula .reveal h3,
+.slides-theme-dracula .reveal h4,
+.slides-theme-dracula .reveal h5,
+.slides-theme-dracula .reveal h6 {
+  color: #f8f8f2 !important;
+}
+.slides-theme-dracula .reveal a {
+  color: #ff79c6 !important;
+}
+.slides-theme-dracula .reveal .progress {
+  background: rgba(255, 255, 255, 0.2) !important;
+}
+.slides-theme-dracula .reveal .progress span {
+  background: #ff79c6 !important;
+}
+.slides-theme-dracula .reveal .controls button {
+  color: #ff79c6 !important;
+}
+
+/* Sky theme */
+.slides-theme-sky .reveal {
+  background: #f7fbfc !important;
+  color: #333 !important;
+}
+.slides-theme-sky .reveal h1,
+.slides-theme-sky .reveal h2,
+.slides-theme-sky .reveal h3,
+.slides-theme-sky .reveal h4,
+.slides-theme-sky .reveal h5,
+.slides-theme-sky .reveal h6 {
+  color: #333 !important;
+}
+.slides-theme-sky .reveal a {
+  color: #3b759e !important;
+}
+.slides-theme-sky .reveal .progress {
+  background: rgba(0, 0, 0, 0.2) !important;
+}
+.slides-theme-sky .reveal .progress span {
+  background: #3b759e !important;
+}
+.slides-theme-sky .reveal .controls button {
+  color: #3b759e !important;
+}
+
+/* Blood theme */
+.slides-theme-blood .reveal {
+  background: #222 !important;
+  color: #eee !important;
+}
+.slides-theme-blood .reveal h1,
+.slides-theme-blood .reveal h2,
+.slides-theme-blood .reveal h3,
+.slides-theme-blood .reveal h4,
+.slides-theme-blood .reveal h5,
+.slides-theme-blood .reveal h6 {
+  color: #eee !important;
+}
+.slides-theme-blood .reveal a {
+  color: #a23 !important;
+}
+.slides-theme-blood .reveal .progress {
+  background: rgba(255, 255, 255, 0.2) !important;
+}
+.slides-theme-blood .reveal .progress span {
+  background: #a23 !important;
+}
+.slides-theme-blood .reveal .controls button {
+  color: #a23 !important;
+}

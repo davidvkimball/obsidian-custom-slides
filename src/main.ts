@@ -39,6 +39,20 @@ export default class CustomSlidesPlugin extends Plugin {
 
   private applyDynamicStyles(): void {
     const body = document.body;
+
+    // Apply theme - remove any existing theme class first
+    const themeClasses = [
+      "slides-theme-black", "slides-theme-white", "slides-theme-league",
+      "slides-theme-beige", "slides-theme-night", "slides-theme-serif",
+      "slides-theme-simple", "slides-theme-solarized", "slides-theme-moon",
+      "slides-theme-dracula", "slides-theme-sky", "slides-theme-blood"
+    ];
+    themeClasses.forEach(cls => body.classList.remove(cls));
+    // Only apply theme class if not using default (let Obsidian handle it)
+    if (this.settings.theme !== "default") {
+      body.classList.add(`slides-theme-${this.settings.theme}`);
+    }
+
     // Toggle modifier classes based on settings
     body.classList.toggle("hide-navigate-left", this.settings.hideNavigateLeft);
     body.classList.toggle("hide-navigate-right", this.settings.hideNavigateRight);
@@ -129,6 +143,10 @@ export default class CustomSlidesPlugin extends Plugin {
 
     // Remove all modifier classes
     body.classList.remove(
+      "slides-theme-black", "slides-theme-white", "slides-theme-league",
+      "slides-theme-beige", "slides-theme-night", "slides-theme-serif",
+      "slides-theme-simple", "slides-theme-solarized", "slides-theme-moon",
+      "slides-theme-dracula", "slides-theme-sky", "slides-theme-blood",
       "hide-navigate-left",
       "hide-navigate-right",
       "hide-navigate-up",

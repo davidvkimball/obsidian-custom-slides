@@ -1,4 +1,5 @@
 export interface CustomSlidesSettings {
+  theme: string;
   hideNavigateLeft: boolean;
   hideNavigateRight: boolean;
   hideNavigateUp: boolean;
@@ -13,6 +14,7 @@ export interface CustomSlidesSettings {
 }
 
 export const DEFAULT_SETTINGS: CustomSlidesSettings = {
+  theme: "default",
   hideNavigateLeft: true,
   hideNavigateRight: true,
   hideNavigateUp: true,

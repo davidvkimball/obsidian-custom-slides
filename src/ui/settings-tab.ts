@@ -4,6 +4,7 @@ import { createSettingsGroup } from "../utils/settings-compat";
 
 export class CustomSlidesSettingTab extends PluginSettingTab {
   plugin: CustomSlidesPlugin;
+  public icon = 'lucide-monitor-cog';
 
   constructor(app: App, plugin: CustomSlidesPlugin) {
     super(app, plugin);
@@ -17,6 +18,33 @@ export class CustomSlidesSettingTab extends PluginSettingTab {
 
     // First group (no heading) - all settings related to customizing slides presentation
     const generalGroup = createSettingsGroup(containerEl, undefined, 'custom-slides');
+
+    generalGroup.addSetting((setting) => {
+      setting
+        .setName("Theme")
+        .setDesc("Choose a reveal.js theme for your presentations.")
+        .addDropdown(dropdown => dropdown
+          .addOptions({
+            "default": "Default (match Obsidian)",
+            "black": "Black",
+            "white": "White",
+            "league": "League",
+            "beige": "Beige",
+            "night": "Night",
+            "serif": "Serif",
+            "simple": "Simple",
+            "solarized": "Solarized",
+            "moon": "Moon",
+            "dracula": "Dracula",
+            "sky": "Sky",
+            "blood": "Blood"
+          })
+          .setValue(this.plugin.settings.theme)
+          .onChange(async (value) => {
+            this.plugin.settings.theme = value;
+            await this.plugin.saveSettings();
+          }));
+    });
 
     generalGroup.addSetting((setting) => {
       setting
