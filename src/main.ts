@@ -1,5 +1,5 @@
 import { Plugin } from "obsidian";
-import { CustomSlidesSettings, DEFAULT_SETTINGS } from "./settings";
+import { CustomSlidesSettings, DEFAULT_SETTINGS, getPlatformDefaults } from "./settings";
 import { CustomSlidesSettingTab } from "./ui/settings-tab";
 import { ModeObserver } from "./utils/mode-observer";
 import { SlideManipulator } from "./utils/slide-manipulator";
@@ -29,7 +29,9 @@ export default class CustomSlidesPlugin extends Plugin {
 
   async loadSettings(): Promise<void> {
     const data = (await this.loadData()) as Partial<CustomSlidesSettings> | null;
-    this.settings = Object.assign({}, DEFAULT_SETTINGS, data);
+    // Apply platform-aware defaults for first-time users (when no saved data exists)
+    const platformDefaults = data === null ? getPlatformDefaults() : {};
+    this.settings = Object.assign({}, DEFAULT_SETTINGS, platformDefaults, data);
   }
 
   async saveSettings(): Promise<void> {
@@ -51,6 +53,16 @@ export default class CustomSlidesPlugin extends Plugin {
     // Only apply theme class if not using default (let Obsidian handle it)
     if (this.settings.theme !== "default") {
       body.classList.add(`slides-theme-${this.settings.theme}`);
+    }
+
+    // Apply transition - remove any existing transition class first
+    const transitionClasses = [
+      "slides-transition-fade", "slides-transition-slide-horizontal", "slides-transition-slide-vertical"
+    ];
+    transitionClasses.forEach(cls => body.classList.remove(cls));
+    // Only apply transition class if not "none" (default reveal.js behavior)
+    if (this.settings.transition !== "none") {
+      body.classList.add(`slides-transition-${this.settings.transition}`);
     }
 
     // Toggle modifier classes based on settings
@@ -113,13 +125,35 @@ export default class CustomSlidesPlugin extends Plugin {
 
     const key = e.key.toLowerCase();
     let arrowKey = "";
+    let isJump = false;
 
     switch (key) {
       case "w": arrowKey = "ArrowUp"; break;
       case "a": arrowKey = "ArrowLeft"; break;
       case "s": arrowKey = "ArrowDown"; break;
       case "d": arrowKey = "ArrowRight"; break;
+      case "q": isJump = true; break; // Jump to first slide
+      case "e": isJump = true; break; // Jump to last slide
       default: return;
+    }
+
+    e.stopPropagation();
+    e.preventDefault();
+
+    if (isJump) {
+      // Handle Q/E for first/last slide navigation
+      const revealEl = document.querySelector(".reveal") as HTMLElement & { Reveal?: { slide: (h: number, v?: number) => void; getTotalSlides: () => number; getHorizontalSlides: () => HTMLElement[] } };
+      if (revealEl?.Reveal) {
+        if (key === "q") {
+          // Jump to first slide
+          revealEl.Reveal.slide(0, 0);
+        } else if (key === "e") {
+          // Jump to last slide (last horizontal slide)
+          const horizontalSlides = revealEl.Reveal.getHorizontalSlides();
+          revealEl.Reveal.slide(horizontalSlides.length - 1, 0);
+        }
+      }
+      return;
     }
 
     // Dispatch a new KeyboardEvent that looks like the arrow key
@@ -133,8 +167,6 @@ export default class CustomSlidesPlugin extends Plugin {
     });
 
     // We stop propagation of the original WASD key and dispatch the arrow key instead
-    e.stopPropagation();
-    e.preventDefault();
     document.dispatchEvent(event);
   };
 
@@ -147,6 +179,7 @@ export default class CustomSlidesPlugin extends Plugin {
       "slides-theme-beige", "slides-theme-night", "slides-theme-serif",
       "slides-theme-simple", "slides-theme-solarized", "slides-theme-moon",
       "slides-theme-dracula", "slides-theme-sky", "slides-theme-blood",
+      "slides-transition-fade", "slides-transition-slide-horizontal", "slides-transition-slide-vertical",
       "hide-navigate-left",
       "hide-navigate-right",
       "hide-navigate-up",

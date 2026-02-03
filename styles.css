@@ -420,3 +420,60 @@ body {
 .slides-theme-blood .reveal .controls button {
   color: #a23 !important;
 }
+
+/* ============================================
+   Slide Transition Effects
+   ============================================ */
+
+/* Fade transition */
+.slides-transition-fade .reveal .slides section {
+  transition: opacity 0.5s ease !important;
+}
+
+.slides-transition-fade .reveal .slides section:not(.present) {
+  opacity: 0 !important;
+}
+
+.slides-transition-fade .reveal .slides section.present {
+  opacity: 1 !important;
+}
+
+/* Slide horizontal transition */
+.slides-transition-slide-horizontal .reveal .slides section {
+  transition: transform 0.5s ease, opacity 0.5s ease !important;
+}
+
+.slides-transition-slide-horizontal .reveal .slides section.future {
+  transform: translateX(100%) !important;
+  opacity: 0 !important;
+}
+
+.slides-transition-slide-horizontal .reveal .slides section.past {
+  transform: translateX(-100%) !important;
+  opacity: 0 !important;
+}
+
+.slides-transition-slide-horizontal .reveal .slides section.present {
+  transform: translateX(0) !important;
+  opacity: 1 !important;
+}
+
+/* Slide vertical transition */
+.slides-transition-slide-vertical .reveal .slides section {
+  transition: transform 0.5s ease, opacity 0.5s ease !important;
+}
+
+.slides-transition-slide-vertical .reveal .slides section.future {
+  transform: translateY(100%) !important;
+  opacity: 0 !important;
+}
+
+.slides-transition-slide-vertical .reveal .slides section.past {
+  transform: translateY(-100%) !important;
+  opacity: 0 !important;
+}
+
+.slides-transition-slide-vertical .reveal .slides section.present {
+  transform: translateY(0) !important;
+  opacity: 1 !important;
+}

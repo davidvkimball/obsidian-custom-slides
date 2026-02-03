@@ -1,6 +1,7 @@
 import { App, PluginSettingTab } from "obsidian";
 import CustomSlidesPlugin from "../main";
 import { createSettingsGroup } from "../utils/settings-compat";
+import { TransitionType } from "../settings";
 
 export class CustomSlidesSettingTab extends PluginSettingTab {
   plugin: CustomSlidesPlugin;
@@ -48,8 +49,26 @@ export class CustomSlidesSettingTab extends PluginSettingTab {
 
     generalGroup.addSetting((setting) => {
       setting
+        .setName("Transition effect")
+        .setDesc("Choose a transition effect between slides.")
+        .addDropdown(dropdown => dropdown
+          .addOptions({
+            "none": "None (instant)",
+            "fade": "Fade",
+            "slide-horizontal": "Slide horizontal",
+            "slide-vertical": "Slide vertical"
+          })
+          .setValue(this.plugin.settings.transition)
+          .onChange(async (value) => {
+            this.plugin.settings.transition = value as TransitionType;
+            await this.plugin.saveSettings();
+          }));
+    });
+
+    generalGroup.addSetting((setting) => {
+      setting
         .setName("Use WASD for navigation")
-        .setDesc("Use W, A, S, and D keys to navigate slides in addition to arrow keys.")
+        .setDesc("Use W, A, S, D keys to navigate slides. Q jumps to first slide, E to last.")
         .addToggle(toggle => toggle
           .setValue(this.plugin.settings.enableWASD)
           .onChange(async (value) => {
