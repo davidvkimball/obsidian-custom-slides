@@ -31,7 +31,7 @@ export const DEFAULT_SETTINGS: CustomSlidesSettings = {
   enablePan: true,
   enableZoom: true,
   enableWASD: false,
-  transition: "none",
+  transition: "slide-horizontal",
 };
 
 /**

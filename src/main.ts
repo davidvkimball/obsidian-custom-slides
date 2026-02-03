@@ -57,13 +57,11 @@ export default class CustomSlidesPlugin extends Plugin {
 
     // Apply transition - remove any existing transition class first
     const transitionClasses = [
-      "slides-transition-fade", "slides-transition-slide-horizontal", "slides-transition-slide-vertical"
+      "slides-transition-none", "slides-transition-fade", "slides-transition-slide-horizontal", "slides-transition-slide-vertical"
     ];
     transitionClasses.forEach(cls => body.classList.remove(cls));
-    // Only apply transition class if not "none" (default reveal.js behavior)
-    if (this.settings.transition !== "none") {
-      body.classList.add(`slides-transition-${this.settings.transition}`);
-    }
+    // Always apply transition class
+    body.classList.add(`slides-transition-${this.settings.transition}`);
 
     // Toggle modifier classes based on settings
     body.classList.toggle("hide-navigate-left", this.settings.hideNavigateLeft);
@@ -84,7 +82,7 @@ export default class CustomSlidesPlugin extends Plugin {
 
   private applyFontStyles(): void {
     const body = document.body;
-    
+
     if (this.settings.respectObsidianSettings) {
       // Apply Obsidian's font settings directly to reveal.js slides
       // Using setProperty for CSS custom properties (dynamic values)
@@ -141,18 +139,16 @@ export default class CustomSlidesPlugin extends Plugin {
     e.preventDefault();
 
     if (isJump) {
-      // Handle Q/E for first/last slide navigation
-      const revealEl = document.querySelector(".reveal") as HTMLElement & { Reveal?: { slide: (h: number, v?: number) => void; getTotalSlides: () => number; getHorizontalSlides: () => HTMLElement[] } };
-      if (revealEl?.Reveal) {
-        if (key === "q") {
-          // Jump to first slide
-          revealEl.Reveal.slide(0, 0);
-        } else if (key === "e") {
-          // Jump to last slide (last horizontal slide)
-          const horizontalSlides = revealEl.Reveal.getHorizontalSlides();
-          revealEl.Reveal.slide(horizontalSlides.length - 1, 0);
-        }
-      }
+      const jumpKey = key === "q" ? "Home" : "End";
+      const event = new KeyboardEvent("keydown", {
+        key: jumpKey,
+        code: jumpKey,
+        keyCode: jumpKey === "Home" ? 36 : 35,
+        which: jumpKey === "Home" ? 36 : 35,
+        bubbles: true,
+        cancelable: true
+      });
+      document.dispatchEvent(event);
       return;
     }
 
@@ -179,7 +175,7 @@ export default class CustomSlidesPlugin extends Plugin {
       "slides-theme-beige", "slides-theme-night", "slides-theme-serif",
       "slides-theme-simple", "slides-theme-solarized", "slides-theme-moon",
       "slides-theme-dracula", "slides-theme-sky", "slides-theme-blood",
-      "slides-transition-fade", "slides-transition-slide-horizontal", "slides-transition-slide-vertical",
+      "slides-transition-none", "slides-transition-fade", "slides-transition-slide-horizontal", "slides-transition-slide-vertical",
       "hide-navigate-left",
       "hide-navigate-right",
       "hide-navigate-up",

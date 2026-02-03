@@ -4,11 +4,13 @@
 .hide-navigate-up .reveal .controls .navigate-up,
 .hide-navigate-down .reveal .controls .navigate-down,
 .hide-close-btn .slides-close-btn {
-  display: none !important; /* Modified behavior */
+  display: none !important;
+  /* Modified behavior */
 }
 
 .reveal .progress {
-  height: var(--progress-height, 10px) !important; /* Default height, updated dynamically */
+  height: var(--progress-height, 10px) !important;
+  /* Default height, updated dynamically */
 }
 
 .left-align-bullets .reveal ol,
@@ -28,9 +30,6 @@ body.is-panning .reveal {
   cursor: grabbing;
 }
 
-.enable-zoom .reveal {
-  /* Ensure zoom doesn't conflict with other interactions if needed */
-}
 
 /* Prevent text selection while panning */
 body.is-panning {
@@ -39,15 +38,18 @@ body.is-panning {
 
 /* Callout icon size matching in presentation mode */
 .reveal .callout-title {
-  align-items: center; /* Better alignment for large icons */
-  gap: 0.5em; /* Add more space between icon and title */
+  align-items: center;
+  /* Better alignment for large icons */
+  gap: 0.5em;
+  /* Add more space between icon and title */
 }
 
 .reveal .callout-icon .svg-icon {
-  width: 0.9em; /* Made slightly smaller than previous 1.1em */
+  width: 0.9em;
+  /* Made slightly smaller than previous 1.1em */
   height: 0.9em;
   /* Ensure the stroke width scales properly too */
-  stroke-width: 2.2; 
+  stroke-width: 2.2;
 }
 
 /* Ensure the slides can be transformed independently without being clipped */
@@ -59,13 +61,13 @@ body.is-panning {
 }
 
 /* Ensure tables and other large content can expand beyond the slide width */
-.reveal .slides section > * {
+.reveal .slides section>* {
   max-width: none !important;
 }
 
 .reveal .slides section {
   /* This ensures our independent translate/scale properties apply correctly to the slide itself */
-  transition: transform 0.8s ease, opacity 0.8s ease; 
+  transition: transform 0.8s ease, opacity 0.8s ease;
 }
 
 /* Font inheritance for slides */
@@ -88,20 +90,16 @@ body.is-panning {
   font-family: var(--slides-font-interface, var(--slides-font-text, inherit)) !important;
 }
 
-/* Ensure styles apply to the body */
-body {
-  /* Dynamic classes (e.g., hide-navigate-left) will be toggled by the plugin */
-}
 
 /* Group settings compatibility styling for older Obsidian builds (< 1.11.0) */
 /* Scoped to only this plugin's settings container to avoid affecting other plugins */
 .custom-slides-settings-compat .setting-group-heading h3 {
-	margin: 0 0 0.75rem;
-	padding-bottom: 0.5rem;
-	padding-top: 0.5rem;
-	font-size: 1rem;
-	font-weight: 600;
-	border-bottom: none !important;
+  margin: 0 0 0.75rem;
+  padding-bottom: 0.5rem;
+  padding-top: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-bottom: none !important;
 }
 
 /* ============================================
@@ -113,6 +111,7 @@ body {
   background: #191919 !important;
   color: #fff !important;
 }
+
 .slides-theme-black .reveal h1,
 .slides-theme-black .reveal h2,
 .slides-theme-black .reveal h3,
@@ -121,15 +120,19 @@ body {
 .slides-theme-black .reveal h6 {
   color: #fff !important;
 }
+
 .slides-theme-black .reveal a {
   color: #42affa !important;
 }
+
 .slides-theme-black .reveal .progress {
   background: rgba(255, 255, 255, 0.2) !important;
 }
+
 .slides-theme-black .reveal .progress span {
   background: #42affa !important;
 }
+
 .slides-theme-black .reveal .controls button {
   color: #42affa !important;
 }
@@ -139,6 +142,7 @@ body {
   background: #fff !important;
   color: #222 !important;
 }
+
 .slides-theme-white .reveal h1,
 .slides-theme-white .reveal h2,
 .slides-theme-white .reveal h3,
@@ -147,15 +151,19 @@ body {
 .slides-theme-white .reveal h6 {
   color: #222 !important;
 }
+
 .slides-theme-white .reveal a {
   color: #2a76dd !important;
 }
+
 .slides-theme-white .reveal .progress {
   background: rgba(0, 0, 0, 0.2) !important;
 }
+
 .slides-theme-white .reveal .progress span {
   background: #2a76dd !important;
 }
+
 .slides-theme-white .reveal .controls button {
   color: #2a76dd !important;
 }
@@ -165,6 +173,7 @@ body {
   background: #1c1e20 !important;
   color: #eee !important;
 }
+
 .slides-theme-league .reveal h1,
 .slides-theme-league .reveal h2,
 .slides-theme-league .reveal h3,
@@ -174,15 +183,19 @@ body {
   color: #eee !important;
   text-shadow: 0 0 20px rgba(0, 0, 0, 0.5) !important;
 }
+
 .slides-theme-league .reveal a {
   color: #13daec !important;
 }
+
 .slides-theme-league .reveal .progress {
   background: rgba(255, 255, 255, 0.2) !important;
 }
+
 .slides-theme-league .reveal .progress span {
   background: #13daec !important;
 }
+
 .slides-theme-league .reveal .controls button {
   color: #13daec !important;
 }
@@ -192,6 +205,7 @@ body {
   background: #f7f3de !important;
   color: #333 !important;
 }
+
 .slides-theme-beige .reveal h1,
 .slides-theme-beige .reveal h2,
 .slides-theme-beige .reveal h3,
@@ -200,15 +214,19 @@ body {
 .slides-theme-beige .reveal h6 {
   color: #333 !important;
 }
+
 .slides-theme-beige .reveal a {
   color: #8b743d !important;
 }
+
 .slides-theme-beige .reveal .progress {
   background: rgba(0, 0, 0, 0.2) !important;
 }
+
 .slides-theme-beige .reveal .progress span {
   background: #8b743d !important;
 }
+
 .slides-theme-beige .reveal .controls button {
   color: #8b743d !important;
 }
@@ -218,6 +236,7 @@ body {
   background: #111 !important;
   color: #eee !important;
 }
+
 .slides-theme-night .reveal h1,
 .slides-theme-night .reveal h2,
 .slides-theme-night .reveal h3,
@@ -226,15 +245,19 @@ body {
 .slides-theme-night .reveal h6 {
   color: #eee !important;
 }
+
 .slides-theme-night .reveal a {
   color: #e7ad52 !important;
 }
+
 .slides-theme-night .reveal .progress {
   background: rgba(255, 255, 255, 0.2) !important;
 }
+
 .slides-theme-night .reveal .progress span {
   background: #e7ad52 !important;
 }
+
 .slides-theme-night .reveal .controls button {
   color: #e7ad52 !important;
 }
@@ -244,6 +267,7 @@ body {
   background: #f0f1eb !important;
   color: #000 !important;
 }
+
 .slides-theme-serif .reveal h1,
 .slides-theme-serif .reveal h2,
 .slides-theme-serif .reveal h3,
@@ -252,15 +276,19 @@ body {
 .slides-theme-serif .reveal h6 {
   color: #383d3d !important;
 }
+
 .slides-theme-serif .reveal a {
   color: #51483d !important;
 }
+
 .slides-theme-serif .reveal .progress {
   background: rgba(0, 0, 0, 0.2) !important;
 }
+
 .slides-theme-serif .reveal .progress span {
   background: #51483d !important;
 }
+
 .slides-theme-serif .reveal .controls button {
   color: #51483d !important;
 }
@@ -270,6 +298,7 @@ body {
   background: #fff !important;
   color: #000 !important;
 }
+
 .slides-theme-simple .reveal h1,
 .slides-theme-simple .reveal h2,
 .slides-theme-simple .reveal h3,
@@ -278,15 +307,19 @@ body {
 .slides-theme-simple .reveal h6 {
   color: #000 !important;
 }
+
 .slides-theme-simple .reveal a {
   color: #00008b !important;
 }
+
 .slides-theme-simple .reveal .progress {
   background: rgba(0, 0, 0, 0.2) !important;
 }
+
 .slides-theme-simple .reveal .progress span {
   background: #00008b !important;
 }
+
 .slides-theme-simple .reveal .controls button {
   color: #00008b !important;
 }
@@ -296,6 +329,7 @@ body {
   background: #fdf6e3 !important;
   color: #657b83 !important;
 }
+
 .slides-theme-solarized .reveal h1,
 .slides-theme-solarized .reveal h2,
 .slides-theme-solarized .reveal h3,
@@ -304,15 +338,19 @@ body {
 .slides-theme-solarized .reveal h6 {
   color: #586e75 !important;
 }
+
 .slides-theme-solarized .reveal a {
   color: #268bd2 !important;
 }
+
 .slides-theme-solarized .reveal .progress {
   background: rgba(0, 0, 0, 0.2) !important;
 }
+
 .slides-theme-solarized .reveal .progress span {
   background: #268bd2 !important;
 }
+
 .slides-theme-solarized .reveal .controls button {
   color: #268bd2 !important;
 }
@@ -322,6 +360,7 @@ body {
   background: #002b36 !important;
   color: #93a1a1 !important;
 }
+
 .slides-theme-moon .reveal h1,
 .slides-theme-moon .reveal h2,
 .slides-theme-moon .reveal h3,
@@ -330,15 +369,19 @@ body {
 .slides-theme-moon .reveal h6 {
   color: #eee8d5 !important;
 }
+
 .slides-theme-moon .reveal a {
   color: #268bd2 !important;
 }
+
 .slides-theme-moon .reveal .progress {
   background: rgba(255, 255, 255, 0.2) !important;
 }
+
 .slides-theme-moon .reveal .progress span {
   background: #268bd2 !important;
 }
+
 .slides-theme-moon .reveal .controls button {
   color: #268bd2 !important;
 }
@@ -348,6 +391,7 @@ body {
   background: #282a36 !important;
   color: #f8f8f2 !important;
 }
+
 .slides-theme-dracula .reveal h1,
 .slides-theme-dracula .reveal h2,
 .slides-theme-dracula .reveal h3,
@@ -356,15 +400,19 @@ body {
 .slides-theme-dracula .reveal h6 {
   color: #f8f8f2 !important;
 }
+
 .slides-theme-dracula .reveal a {
   color: #ff79c6 !important;
 }
+
 .slides-theme-dracula .reveal .progress {
   background: rgba(255, 255, 255, 0.2) !important;
 }
+
 .slides-theme-dracula .reveal .progress span {
   background: #ff79c6 !important;
 }
+
 .slides-theme-dracula .reveal .controls button {
   color: #ff79c6 !important;
 }
@@ -374,6 +422,7 @@ body {
   background: #f7fbfc !important;
   color: #333 !important;
 }
+
 .slides-theme-sky .reveal h1,
 .slides-theme-sky .reveal h2,
 .slides-theme-sky .reveal h3,
@@ -382,15 +431,19 @@ body {
 .slides-theme-sky .reveal h6 {
   color: #333 !important;
 }
+
 .slides-theme-sky .reveal a {
   color: #3b759e !important;
 }
+
 .slides-theme-sky .reveal .progress {
   background: rgba(0, 0, 0, 0.2) !important;
 }
+
 .slides-theme-sky .reveal .progress span {
   background: #3b759e !important;
 }
+
 .slides-theme-sky .reveal .controls button {
   color: #3b759e !important;
 }
@@ -400,6 +453,7 @@ body {
   background: #222 !important;
   color: #eee !important;
 }
+
 .slides-theme-blood .reveal h1,
 .slides-theme-blood .reveal h2,
 .slides-theme-blood .reveal h3,
@@ -408,15 +462,19 @@ body {
 .slides-theme-blood .reveal h6 {
   color: #eee !important;
 }
+
 .slides-theme-blood .reveal a {
   color: #a23 !important;
 }
+
 .slides-theme-blood .reveal .progress {
   background: rgba(255, 255, 255, 0.2) !important;
 }
+
 .slides-theme-blood .reveal .progress span {
   background: #a23 !important;
 }
+
 .slides-theme-blood .reveal .controls button {
   color: #a23 !important;
 }
@@ -424,6 +482,11 @@ body {
 /* ============================================
    Slide Transition Effects
    ============================================ */
+
+/* None transition (instant) */
+.slides-transition-none .reveal .slides section {
+  transition: none !important;
+}
 
 /* Fade transition */
 .slides-transition-fade .reveal .slides section {

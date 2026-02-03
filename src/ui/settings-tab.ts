@@ -53,10 +53,10 @@ export class CustomSlidesSettingTab extends PluginSettingTab {
         .setDesc("Choose a transition effect between slides.")
         .addDropdown(dropdown => dropdown
           .addOptions({
-            "none": "None (instant)",
+            "slide-horizontal": "Slide horizontal (default)",
+            "slide-vertical": "Slide vertical",
             "fade": "Fade",
-            "slide-horizontal": "Slide horizontal",
-            "slide-vertical": "Slide vertical"
+            "none": "None (instant)"
           })
           .setValue(this.plugin.settings.transition)
           .onChange(async (value) => {
