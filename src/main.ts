@@ -8,6 +8,9 @@ export default class CustomSlidesPlugin extends Plugin {
   settings!: CustomSlidesSettings;
   private modeObserver!: ModeObserver;
   private slideManipulator!: SlideManipulator;
+  private footerEl: HTMLElement | null = null;
+  private _footerVisibilityHandler: (() => void) | null = null;
+  private _slideNumberHandler: (() => void) | null = null;
 
   async onload(): Promise<void> {
     try {
@@ -37,6 +40,7 @@ export default class CustomSlidesPlugin extends Plugin {
   async saveSettings(): Promise<void> {
     await this.saveData(this.settings);
     this.applyDynamicStyles(); // Reapply dynamic styles after saving
+    this.updateSlideNumbers();
   }
 
   private applyDynamicStyles(): void {
@@ -97,6 +101,70 @@ export default class CustomSlidesPlugin extends Plugin {
     }
   }
 
+  private createFooter(): void {
+    if (!this.settings.footerText.trim()) {
+      this.footerEl = null;
+      return;
+    }
+    const reveal = document.querySelector(".reveal");
+    if (!reveal) return;
+
+    const footer = document.createElement("div");
+    footer.className = "custom-slides-footer";
+    footer.textContent = this.settings.footerText;
+    reveal.appendChild(footer);
+    this.footerEl = footer;
+
+    this._footerVisibilityHandler = () => this.updateFooterVisibility();
+    reveal.addEventListener("slidechanged", this._footerVisibilityHandler);
+    reveal.addEventListener("ready", this._footerVisibilityHandler);
+    this.updateFooterVisibility();
+  }
+
+  private updateFooterVisibility(): void {
+    if (!this.footerEl) return;
+    const slidesContainer = document.querySelector(".reveal .slides");
+    if (!slidesContainer) return;
+    const currentSection = slidesContainer.querySelector(":scope > section.present");
+    const firstSection = slidesContainer.querySelector(":scope > section:first-child");
+    this.footerEl.style.display = (currentSection === firstSection) ? "none" : "";
+  }
+
+  private destroyFooter(): void {
+    if (this.footerEl) {
+      this.footerEl.remove();
+      this.footerEl = null;
+    }
+    if (this._footerVisibilityHandler) {
+      const reveal = document.querySelector(".reveal");
+      if (reveal) {
+        reveal.removeEventListener("slidechanged", this._footerVisibilityHandler);
+        reveal.removeEventListener("ready", this._footerVisibilityHandler);
+      }
+      this._footerVisibilityHandler = null;
+    }
+  }
+
+  private updateSlideNumbers(): void {
+    // Always clear existing numbers first (idempotent)
+    document.querySelectorAll(".custom-slide-number").forEach(el => el.remove());
+
+    if (!this.settings.showSlideNumbers) return;
+
+    const reveal = document.querySelector(".reveal");
+    if (!reveal) return;
+
+    const sections = reveal.querySelectorAll(".slides > section");
+    sections.forEach((section, index) => {
+      if (index === 0) return; // Skip title slide
+      const numEl = document.createElement("div");
+      numEl.className = "custom-slide-number";
+      numEl.classList.add(`slide-number-${this.settings.slideNumberPosition}`);
+      numEl.textContent = String(index);
+      section.appendChild(numEl);
+    });
+  }
+
   private setupModeObserver(): void {
     this.modeObserver = new ModeObserver(this);
     this.modeObserver.setup();
@@ -111,11 +179,25 @@ export default class CustomSlidesPlugin extends Plugin {
     if (this.settings.enableWASD) {
       window.addEventListener("keydown", this.handleWASD, true);
     }
+    this.createFooter();
+    this.updateSlideNumbers();
+    const reveal = document.querySelector(".reveal");
+    if (reveal) {
+      this._slideNumberHandler = () => this.updateSlideNumbers();
+      reveal.addEventListener("slidechanged", this._slideNumberHandler);
+    }
   }
 
   public onExitSlidesMode(): void {
     this.slideManipulator.destroy();
     window.removeEventListener("keydown", this.handleWASD, true);
+    this.destroyFooter();
+    const reveal = document.querySelector(".reveal");
+    if (reveal && this._slideNumberHandler) {
+      reveal.removeEventListener("slidechanged", this._slideNumberHandler);
+    }
+    this._slideNumberHandler = null;
+    document.querySelectorAll(".custom-slide-number").forEach(el => el.remove());
   }
 
   private handleWASD = (e: KeyboardEvent): void => {
@@ -167,6 +249,8 @@ export default class CustomSlidesPlugin extends Plugin {
   };
 
   onunload(): void {
+    this.destroyFooter();
+    document.querySelectorAll(".custom-slide-number").forEach(el => el.remove());
     const body = document.body;
 
     // Remove all modifier classes

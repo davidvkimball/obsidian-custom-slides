@@ -1,6 +1,7 @@
 import { Platform } from "obsidian";
 
 export type TransitionType = "none" | "fade" | "slide-horizontal" | "slide-vertical";
+export type SlideNumberPosition = "bottom-left" | "bottom-right";
 
 export interface CustomSlidesSettings {
   theme: string;
@@ -16,6 +17,10 @@ export interface CustomSlidesSettings {
   enableZoom: boolean;
   enableWASD: boolean;
   transition: TransitionType;
+  footerText: string;
+  showSlideNumbers: boolean;
+  slideNumberPosition: SlideNumberPosition;
+  enableAutoFit: boolean;
 }
 
 export const DEFAULT_SETTINGS: CustomSlidesSettings = {
@@ -32,6 +37,10 @@ export const DEFAULT_SETTINGS: CustomSlidesSettings = {
   enableZoom: true,
   enableWASD: false,
   transition: "slide-horizontal",
+  footerText: "",
+  showSlideNumbers: false,
+  slideNumberPosition: "bottom-left",
+  enableAutoFit: true,
 };
 
 /**

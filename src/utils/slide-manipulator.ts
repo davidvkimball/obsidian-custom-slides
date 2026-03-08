@@ -71,9 +71,12 @@ export class SlideManipulator {
   private handleSlideChanged = (): void => {
     // 1. Reset the previous slide's transform so it doesn't stay messed up
     this.reset();
-    
+
     // 2. Refresh the pointer to the new current slide
     this.refreshSlidesElement();
+
+    // 3. Auto-fit overflowing content to the viewport
+    this.fitSlideToViewport();
   };
 
   destroy(): void {
@@ -209,7 +212,74 @@ export class SlideManipulator {
       (this.slidesElement.style as any).scale = "";
       // eslint-disable-next-line obsidianmd/no-static-styles-assignment
       this.slidesElement.style.transformOrigin = "";
+      // eslint-disable-next-line obsidianmd/no-static-styles-assignment
+      (this.slidesElement.style as any).zoom = "";
     }
     document.body.classList.remove("is-panning");
   };
+
+  /**
+   * Auto-fit the current slide to the viewport using CSS zoom.
+   *
+   * CSS sets min-height: 100% on sections so they fill the .slides container.
+   * If content exceeds the container height, the section grows beyond it.
+   * This function detects that overflow and applies CSS zoom to shrink the
+   * section back to fit. CSS zoom (unlike transform: scale) affects layout,
+   * so the slide background shrinks with the content.
+   *
+   * Called once on slide change — user can zoom/pan freely after.
+   */
+  private fitSlideToViewport(): void {
+    if (!this.plugin.settings.enableAutoFit) return;
+    if (!this.slidesElement) return;
+    const targetSlide = this.slidesElement;
+    // Double rAF ensures reveal.js layout is fully settled before measuring
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        if (this.slidesElement === targetSlide) {
+          this.applyAutoFitZoom();
+        }
+      });
+    });
+    // Re-measure after images finish loading (they may change scrollHeight)
+    const images = targetSlide.querySelectorAll("img");
+    images.forEach((img) => {
+      if (!img.complete) {
+        img.addEventListener("load", () => {
+          if (this.slidesElement === targetSlide) {
+            this.applyAutoFitZoom();
+          }
+        }, { once: true });
+      }
+    });
+  }
+
+  private applyAutoFitZoom(): void {
+    if (!this.slidesElement) return;
+    const section = this.slidesElement;
+    // Reset any previous zoom so we measure natural size
+    (section.style as any).zoom = "";
+    const slidesContainer = section.closest(".slides");
+    if (!slidesContainer) return;
+    const containerH = (slidesContainer as HTMLElement).clientHeight;
+    const naturalH = section.scrollHeight;
+    if (naturalH > containerH) {
+      const zoomFactor = containerH / naturalH;
+      // eslint-disable-next-line obsidianmd/no-static-styles-assignment
+      (section.style as any).zoom = `${zoomFactor}`;
+      // CSS zoom interacts non-linearly with reveal.js's transform: scale().
+      // A single screen-pixel correction only closes ~50% of the gap, so we
+      // square the correction factor to compensate in one pass.
+      requestAnimationFrame(() => {
+        if (!this.slidesElement || !slidesContainer) return;
+        const sectionRect = this.slidesElement.getBoundingClientRect();
+        const containerRect = (slidesContainer as HTMLElement).getBoundingClientRect();
+        if (sectionRect.height > containerRect.height + 1) {
+          const correction = containerRect.height / sectionRect.height;
+          const currentZoom = parseFloat((this.slidesElement.style as any).zoom) || 1;
+          (this.slidesElement.style as any).zoom = `${currentZoom * correction * correction}`;
+        }
+      });
+    }
+  }
 }

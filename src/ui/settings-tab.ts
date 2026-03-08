@@ -1,7 +1,7 @@
 import { App, PluginSettingTab , SettingGroup} from "obsidian";
 import CustomSlidesPlugin from "../main";
 
-import { TransitionType } from "../settings";
+import { SlideNumberPosition, TransitionType } from "../settings";
 
 export class CustomSlidesSettingTab extends PluginSettingTab {
   plugin: CustomSlidesPlugin;
@@ -197,6 +197,62 @@ export class CustomSlidesSettingTab extends PluginSettingTab {
           .setValue(this.plugin.settings.enableZoom)
           .onChange(async (value: any) => {
             this.plugin.settings.enableZoom = value;
+            await this.plugin.saveSettings();
+          }));
+    });
+
+    generalGroup.addSetting((setting: any) => {
+      setting
+        .setName("Footer text")
+        .setDesc("Text displayed at the bottom of every slide except the title slide. Leave empty for no footer.")
+        .addText((text: any) => text
+          .setPlaceholder("e.g. Confidential")
+          .setValue(this.plugin.settings.footerText)
+          .onChange(async (value: any) => {
+            this.plugin.settings.footerText = value;
+            await this.plugin.saveSettings();
+          }));
+    });
+
+    generalGroup.addSetting((setting: any) => {
+      setting
+        .setName("Show slide numbers")
+        .setDesc("Display a slide number on each slide, excluding the title slide.")
+        .addToggle((toggle: any) => toggle
+          .setValue(this.plugin.settings.showSlideNumbers)
+          .onChange(async (value: any) => {
+            this.plugin.settings.showSlideNumbers = value;
+            await this.plugin.saveSettings();
+            this.display();
+          }));
+    });
+
+    if (this.plugin.settings.showSlideNumbers) {
+      generalGroup.addSetting((setting: any) => {
+        setting
+          .setName("Slide number position")
+          .setDesc("Choose where the slide number appears.")
+          .addDropdown((dropdown: any) => dropdown
+            .addOptions({
+              "bottom-left": "Bottom left",
+              "bottom-right": "Bottom right"
+            })
+            .setValue(this.plugin.settings.slideNumberPosition)
+            .onChange(async (value: any) => {
+              this.plugin.settings.slideNumberPosition = value as SlideNumberPosition;
+              await this.plugin.saveSettings();
+            }));
+      });
+    }
+
+    generalGroup.addSetting((setting: any) => {
+      setting
+        .setName("Auto-fit slides")
+        .setDesc("Automatically shrink overflowing slide content to fit the viewport.")
+        .addToggle((toggle: any) => toggle
+          .setValue(this.plugin.settings.enableAutoFit)
+          .onChange(async (value: any) => {
+            this.plugin.settings.enableAutoFit = value;
             await this.plugin.saveSettings();
           }));
     });
