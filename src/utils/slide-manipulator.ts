@@ -4,11 +4,11 @@ export class SlideManipulator {
   private plugin: CustomSlidesPlugin;
   private revealContainer: HTMLElement | null = null;
   private slidesElement: HTMLElement | null = null;
-  
+
   private scale = 1;
   private translateX = 0;
   private translateY = 0;
-  
+
   private isPanning = false;
   private lastMouseX = 0;
   private lastMouseY = 0;
@@ -32,7 +32,7 @@ export class SlideManipulator {
 
     // Wheel event for zooming
     this.revealContainer.addEventListener("wheel", this.handleWheel, { passive: false });
-    
+
     // Mouse events for panning
     this.revealContainer.addEventListener("mousedown", this.handleMouseDown);
     this.revealContainer.addEventListener("contextmenu", this.handleContextMenu);
@@ -41,10 +41,10 @@ export class SlideManipulator {
 
     // Reset on slide change
     this.revealContainer.addEventListener("slidechanged", this.handleSlideChanged);
-    
+
     // Also handle 'ready' event when reveal.js has finished initializing
     this.revealContainer.addEventListener("ready", this.handleSlideChanged);
-    
+
     // Initial refresh in case it's already ready
     this.refreshSlidesElement();
   }
@@ -55,12 +55,12 @@ export class SlideManipulator {
     // Reveal.js might not have added .present immediately on the first slide
     // So we'll try to find the current indices and target the matching section
     this.slidesElement = this.revealContainer.querySelector(".slides > section.present") as HTMLElement;
-    
+
     // If not found, try the first section as a fallback for the very first launch
     if (!this.slidesElement) {
       this.slidesElement = this.revealContainer.querySelector(".slides > section") as HTMLElement;
     }
-    
+
     // Handle nested vertical slides
     const verticalSlide = this.slidesElement?.querySelector("section.present") as HTMLElement;
     if (verticalSlide) {
@@ -89,7 +89,7 @@ export class SlideManipulator {
     }
     window.removeEventListener("mousemove", this.handleMouseMove);
     window.removeEventListener("mouseup", this.handleMouseUp);
-    
+
     this.reset();
     this.revealContainer = null;
     this.slidesElement = null;
@@ -97,7 +97,7 @@ export class SlideManipulator {
 
   private handleContextMenu = (e: MouseEvent): void => {
     if (!this.plugin.settings.enablePan && !this.plugin.settings.enableZoom) return;
-    
+
     // Right click to reset
     e.preventDefault();
     this.reset();
@@ -115,9 +115,9 @@ export class SlideManipulator {
     if (newScale !== this.scale) {
       // Zoom to cursor logic:
       // We want to keep the point under the cursor fixed in viewport coordinates.
-      
+
       const rect = this.slidesElement.getBoundingClientRect();
-      
+
       // Calculate cursor position relative to the CENTER of the slides element
       // because CSS 'scale' and 'translate' independent properties use center origin by default.
       const centerX = rect.left + rect.width / 2;
@@ -136,7 +136,7 @@ export class SlideManipulator {
       // Update translation to keep the content position fixed
       this.translateX += contentX * (oldScale - newScale);
       this.translateY += contentY * (oldScale - newScale);
-      
+
       this.applyTransform();
     }
   };
@@ -149,7 +149,7 @@ export class SlideManipulator {
     this.lastMouseX = e.clientX;
     this.lastMouseY = e.clientY;
     document.body.classList.add("is-panning");
-    
+
     // Prevent default to avoid text selection or drag-and-drop ghost images
     e.preventDefault();
   };
@@ -182,7 +182,7 @@ export class SlideManipulator {
 
   private applyTransform(): void {
     if (!this.slidesElement) return;
-    
+
     // We must ensure the transform-origin is set to the center (0,0 of the coordinate space)
     // to make our translation and scaling math consistent.
     // Reveal.js slides usually have their origin in the center by default, 
@@ -212,8 +212,6 @@ export class SlideManipulator {
       (this.slidesElement.style as any).scale = "";
       // eslint-disable-next-line obsidianmd/no-static-styles-assignment
       this.slidesElement.style.transformOrigin = "";
-      // eslint-disable-next-line obsidianmd/no-static-styles-assignment
-      (this.slidesElement.style as any).zoom = "";
     }
     document.body.classList.remove("is-panning");
   };
