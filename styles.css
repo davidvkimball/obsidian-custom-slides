@@ -574,7 +574,7 @@ body.is-panning {
   color: rgba(150, 150, 150, 0.7);
   font-family: var(--slides-font-interface, var(--slides-font-text, inherit));
   pointer-events: none;
-  z-index: 10;
+  z-index: 30;
   line-height: 1;
 }
 
