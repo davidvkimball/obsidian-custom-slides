@@ -17,6 +17,9 @@ This plugin allows you to customize the Slides [Obsidian](https://obsidian.md) c
 - **Left-Align Lists**: Enable left-aligned bulleted and numbered lists in presentation mode for a cleaner, more readable layout, with a 1em left margin for proper spacing.
 - **Immediate Keyboard Input**: Automatically switches to reading mode when entering Slides mode so spacebar and arrows work without having to click your presentation, and restores your previous mode (e.g., edit or source) when exiting.
 - **Custom Font Support**: Use the text font settings specified in your Obsidian settings.
+- **Footer Text**: Display configurable text at the bottom of every slide except the title slide. Set via "Footer text" in settings; leave empty to disable. Uses plain text (no HTML) and adapts color automatically for dark themes.
+- **Slide Numbers**: Show a slide number on each slide, excluding the title slide. Numbers start at 1 for the second slide. Position is configurable: bottom-left (default) or bottom-right. The position dropdown only appears when slide numbers are enabled.
+- **Auto-Fit Slides**: Automatically shrinks overflowing slide content to fit the viewport using CSS zoom, preserving layout and backgrounds. Enabled by default; can be toggled off in settings.
 - **Mobile Support**: Works on iPad and other mobile devices with sensible touch-friendly defaults (navigation arrows shown by default on mobile).
 
 ## Installation
@@ -35,7 +38,7 @@ This plugin allows you to customize the Slides [Obsidian](https://obsidian.md) c
 ## Usage
 
 1. **Enable the Plugin**: Activate it in the Community Plugins settings.
-2. **Configure Settings**: Use the settings tab to toggle navigation arrow visibility, set the progress bar height, choose transition effects, and enable left-aligned lists.
+2. **Configure Settings**: Use the settings tab to toggle navigation arrow visibility, set the progress bar height, choose transition effects, enable left-aligned lists, set footer text, enable slide numbers, and configure auto-fit behavior.
 3. **Start a Presentation**: Open a note with Slides-compatible Markdown (e.g., using `---` for slides) and use the "Slides: Start Presentation" command from the Command Palette.
 4. **Using Keys for Navigation**: You can use the spacebar and arrow keys to go between slides as normal and the ESC key will exit your presentation.
 

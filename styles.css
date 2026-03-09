@@ -533,3 +533,65 @@ body.is-panning {
   transform: translateY(0) !important;
   opacity: 1 !important;
 }
+
+/* ============================================
+   Footer Text
+   ============================================ */
+
+.custom-slides-footer {
+  position: absolute;
+  /* Dynamically position above the progress bar with CSS calc */
+  bottom: calc(var(--progress-height, 10px) + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.55em;
+  color: rgba(100, 100, 100, 0.6);
+  font-family: var(--slides-font-text, inherit);
+  pointer-events: none;
+  z-index: 30;
+  white-space: nowrap;
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+
+/* Footer text color for dark themes */
+.slides-theme-black .custom-slides-footer,
+.slides-theme-league .custom-slides-footer,
+.slides-theme-night .custom-slides-footer,
+.slides-theme-moon .custom-slides-footer,
+.slides-theme-dracula .custom-slides-footer,
+.slides-theme-blood .custom-slides-footer {
+  color: rgba(200, 200, 200, 0.4);
+}
+
+/* ============================================
+   Slide Numbers
+   ============================================ */
+
+.custom-slide-number {
+  position: absolute;
+  /* Dynamically position above the progress bar with CSS calc */
+  bottom: calc(var(--progress-height, 10px) + 12px);
+  font-size: 0.55em;
+  color: rgba(150, 150, 150, 0.7);
+  font-family: var(--slides-font-interface, var(--slides-font-text, inherit));
+  pointer-events: none;
+  z-index: 30;
+  line-height: 1;
+}
+
+.custom-slide-number.slide-number-bottom-left {
+  left: 24px;
+  right: auto;
+}
+
+.custom-slide-number.slide-number-bottom-right {
+  right: 24px;
+  left: auto;
+}
+
+/* When navigate buttons or close button are visible, push the number inward to prevent overlap */
+body:not(.hide-navigate-right) .custom-slide-number.slide-number-bottom-right,
+body:not(.hide-close-btn) .custom-slide-number.slide-number-bottom-right {
+  right: 140px;
+}
