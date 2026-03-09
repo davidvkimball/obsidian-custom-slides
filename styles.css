@@ -541,7 +541,7 @@ body.is-panning {
 .custom-slides-footer {
   position: absolute;
   /* Dynamically position above the progress bar with CSS calc */
-  bottom: calc(var(--progress-height, 10px) + 20px);
+  bottom: calc(var(--progress-height, 10px) + 12px);
   left: 50%;
   transform: translateX(-50%);
   font-size: 0.55em;
@@ -571,7 +571,7 @@ body.is-panning {
 .custom-slide-number {
   position: absolute;
   /* Dynamically position above the progress bar with CSS calc */
-  bottom: calc(var(--progress-height, 10px) + 6px);
+  bottom: calc(var(--progress-height, 10px) + 12px);
   font-size: 0.55em;
   color: rgba(150, 150, 150, 0.7);
   font-family: var(--slides-font-interface, var(--slides-font-text, inherit));
