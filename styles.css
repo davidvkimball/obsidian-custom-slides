@@ -570,7 +570,8 @@ body.is-panning {
 
 .custom-slide-number {
   position: absolute;
-  bottom: 16px;
+  /* Dynamically position above the progress bar with CSS calc */
+  bottom: calc(var(--progress-height, 10px) + 6px);
   font-size: 0.55em;
   color: rgba(150, 150, 150, 0.7);
   font-family: var(--slides-font-interface, var(--slides-font-text, inherit));
