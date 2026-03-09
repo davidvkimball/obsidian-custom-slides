@@ -9,6 +9,7 @@ export default class CustomSlidesPlugin extends Plugin {
   private modeObserver!: ModeObserver;
   private slideManipulator!: SlideManipulator;
   private footerEl: HTMLElement | null = null;
+  private slideNumberEl: HTMLElement | null = null;
   private _footerVisibilityHandler: (() => void) | null = null;
   private _slideNumberHandler: (() => void) | null = null;
 
@@ -40,7 +41,7 @@ export default class CustomSlidesPlugin extends Plugin {
   async saveSettings(): Promise<void> {
     await this.saveData(this.settings);
     this.applyDynamicStyles(); // Reapply dynamic styles after saving
-    this.updateSlideNumbers();
+    this.createSlideNumber();
   }
 
   private applyDynamicStyles(): void {
@@ -147,26 +148,57 @@ export default class CustomSlidesPlugin extends Plugin {
     }
   }
 
-  private updateSlideNumbers(): void {
-    // Always clear existing numbers first (idempotent)
-    document.querySelectorAll(".custom-slide-number").forEach(el => el.remove());
-
+  private createSlideNumber(): void {
+    this.destroySlideNumber();
     if (!this.settings.showSlideNumbers) return;
 
     const reveal = document.querySelector(".reveal");
     if (!reveal) return;
 
-    // Use leaf slides so vertical stacks get distinct numbers per child slide
-    const leafSlides = Array.from(reveal.querySelectorAll(".slides section")).filter(s => s.querySelectorAll("section").length === 0);
+    const numEl = document.createElement("div");
+    numEl.className = "custom-slide-number";
+    numEl.classList.add(`slide-number-${this.settings.slideNumberPosition}`);
+    reveal.appendChild(numEl);
+    this.slideNumberEl = numEl;
 
-    leafSlides.forEach((section, index) => {
-      if (index === 0) return; // Skip title slide
-      const numEl = document.createElement("div");
-      numEl.className = "custom-slide-number";
-      numEl.classList.add(`slide-number-${this.settings.slideNumberPosition}`);
-      numEl.textContent = String(index);
-      section.appendChild(numEl);
-    });
+    this._slideNumberHandler = () => this.updateSlideNumberVisibility();
+    reveal.addEventListener("slidechanged", this._slideNumberHandler);
+    reveal.addEventListener("ready", this._slideNumberHandler);
+    this.updateSlideNumberVisibility();
+  }
+
+  private updateSlideNumberVisibility(): void {
+    if (!this.slideNumberEl) return;
+    const slidesContainer = document.querySelector(".reveal .slides");
+    if (!slidesContainer) return;
+
+    const leafSlides = Array.from(slidesContainer.querySelectorAll("section")).filter(s => s.querySelectorAll("section").length === 0);
+    const currentSlide = leafSlides.find(s => s.classList.contains("present"));
+
+    if (!currentSlide || currentSlide === leafSlides[0]) {
+      this.slideNumberEl.style.display = "none";
+    } else {
+      const index = leafSlides.indexOf(currentSlide);
+      this.slideNumberEl.style.display = "";
+      this.slideNumberEl.textContent = String(index);
+    }
+  }
+
+  private destroySlideNumber(): void {
+    if (this.slideNumberEl) {
+      this.slideNumberEl.remove();
+      this.slideNumberEl = null;
+    }
+    if (this._slideNumberHandler) {
+      const reveal = document.querySelector(".reveal");
+      if (reveal) {
+        reveal.removeEventListener("slidechanged", this._slideNumberHandler);
+        reveal.removeEventListener("ready", this._slideNumberHandler);
+      }
+      this._slideNumberHandler = null;
+    }
+    // Cleanup any lingering ones from previous methods
+    document.querySelectorAll(".custom-slide-number").forEach(el => el.remove());
   }
 
   private setupModeObserver(): void {
@@ -184,24 +216,14 @@ export default class CustomSlidesPlugin extends Plugin {
       window.addEventListener("keydown", this.handleWASD, true);
     }
     this.createFooter();
-    this.updateSlideNumbers();
-    const reveal = document.querySelector(".reveal");
-    if (reveal) {
-      this._slideNumberHandler = () => this.updateSlideNumbers();
-      reveal.addEventListener("slidechanged", this._slideNumberHandler);
-    }
+    this.createSlideNumber();
   }
 
   public onExitSlidesMode(): void {
     this.slideManipulator.destroy();
     window.removeEventListener("keydown", this.handleWASD, true);
     this.destroyFooter();
-    const reveal = document.querySelector(".reveal");
-    if (reveal && this._slideNumberHandler) {
-      reveal.removeEventListener("slidechanged", this._slideNumberHandler);
-    }
-    this._slideNumberHandler = null;
-    document.querySelectorAll(".custom-slide-number").forEach(el => el.remove());
+    this.destroySlideNumber();
   }
 
   private handleWASD = (e: KeyboardEvent): void => {
@@ -253,13 +275,8 @@ export default class CustomSlidesPlugin extends Plugin {
   };
 
   onunload(): void {
-    const reveal = document.querySelector(".reveal");
-    if (reveal && this._slideNumberHandler) {
-      reveal.removeEventListener("slidechanged", this._slideNumberHandler);
-      this._slideNumberHandler = null;
-    }
+    this.destroySlideNumber();
     this.destroyFooter();
-    document.querySelectorAll(".custom-slide-number").forEach(el => el.remove());
     const body = document.body;
 
     // Remove all modifier classes
