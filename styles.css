@@ -540,14 +540,15 @@ body.is-panning {
 
 .custom-slides-footer {
   position: absolute;
-  bottom: 40px;
+  /* Dynamically position above the progress bar with CSS calc */
+  bottom: calc(var(--progress-height, 10px) + 20px);
   left: 50%;
   transform: translateX(-50%);
   font-size: 0.55em;
   color: rgba(100, 100, 100, 0.6);
   font-family: var(--slides-font-text, inherit);
   pointer-events: none;
-  z-index: 20;
+  z-index: 30;
   white-space: nowrap;
   text-align: center;
   letter-spacing: 0.02em;
