@@ -584,6 +584,12 @@ body.is-panning {
 }
 
 .custom-slide-number.slide-number-bottom-right {
-  right: 160px;
+  right: 24px;
   left: auto;
+}
+
+/* When navigate buttons or close button are visible, push the number inward to prevent overlap */
+body:not(.hide-navigate-right) .custom-slide-number.slide-number-bottom-right,
+body:not(.hide-close-btn) .custom-slide-number.slide-number-bottom-right {
+  right: 140px;
 }

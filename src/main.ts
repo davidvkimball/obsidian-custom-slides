@@ -125,9 +125,11 @@ export default class CustomSlidesPlugin extends Plugin {
     if (!this.footerEl) return;
     const slidesContainer = document.querySelector(".reveal .slides");
     if (!slidesContainer) return;
-    const currentSection = slidesContainer.querySelector(":scope > section.present");
-    const firstSection = slidesContainer.querySelector(":scope > section:first-child");
-    this.footerEl.style.display = (currentSection === firstSection) ? "none" : "";
+
+    // Use leaf slides to correctly handle vertical stacks
+    const leafSlides = Array.from(slidesContainer.querySelectorAll("section")).filter(s => s.querySelectorAll("section").length === 0);
+    const currentSlide = leafSlides.find(s => s.classList.contains("present"));
+    this.footerEl.style.display = (currentSlide === leafSlides[0]) ? "none" : "";
   }
 
   private destroyFooter(): void {
@@ -154,8 +156,10 @@ export default class CustomSlidesPlugin extends Plugin {
     const reveal = document.querySelector(".reveal");
     if (!reveal) return;
 
-    const sections = reveal.querySelectorAll(".slides > section");
-    sections.forEach((section, index) => {
+    // Use leaf slides so vertical stacks get distinct numbers per child slide
+    const leafSlides = Array.from(reveal.querySelectorAll(".slides section")).filter(s => s.querySelectorAll("section").length === 0);
+
+    leafSlides.forEach((section, index) => {
       if (index === 0) return; // Skip title slide
       const numEl = document.createElement("div");
       numEl.className = "custom-slide-number";
@@ -249,6 +253,11 @@ export default class CustomSlidesPlugin extends Plugin {
   };
 
   onunload(): void {
+    const reveal = document.querySelector(".reveal");
+    if (reveal && this._slideNumberHandler) {
+      reveal.removeEventListener("slidechanged", this._slideNumberHandler);
+      this._slideNumberHandler = null;
+    }
     this.destroyFooter();
     document.querySelectorAll(".custom-slide-number").forEach(el => el.remove());
     const body = document.body;
