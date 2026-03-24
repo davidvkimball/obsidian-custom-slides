@@ -206,7 +206,7 @@ export class CustomSlidesSettingTab extends PluginSettingTab {
         .setName("Footer text")
         .setDesc("Text displayed at the bottom of every slide except the title slide. Leave empty for no footer.")
         .addText((text: any) => text
-          .setPlaceholder("e.g. Confidential")
+          .setPlaceholder("Confidential")
           .setValue(this.plugin.settings.footerText)
           .onChange(async (value: any) => {
             this.plugin.settings.footerText = value;

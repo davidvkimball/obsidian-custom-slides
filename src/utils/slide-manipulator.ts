@@ -225,7 +225,7 @@ export class SlideManipulator {
    * section back to fit. CSS zoom (unlike transform: scale) affects layout,
    * so the slide background shrinks with the content.
    *
-   * Called once on slide change — user can zoom/pan freely after.
+   * Called once on slide change. User can zoom/pan freely after.
    */
   private fitSlideToViewport(): void {
     if (!this.plugin.settings.enableAutoFit) return;
