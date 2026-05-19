@@ -1,4 +1,4 @@
-import { MarkdownView, Plugin } from "obsidian";
+import { MarkdownView } from "obsidian";
 import CustomSlidesPlugin from "../main";
 
 export class ModeObserver {
@@ -12,7 +12,7 @@ export class ModeObserver {
   }
 
   setup(): void {
-    this.observer = new MutationObserver((mutations, obs) => {
+    this.observer = new MutationObserver(() => {
       this.checkSlidesMode();
     });
 

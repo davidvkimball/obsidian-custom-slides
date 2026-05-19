@@ -1,10 +1,11 @@
 {
 	"id": "custom-slides",
 	"name": "Custom Slides",
-	"version": "1.1.6",
+	"version": "1.1.7",
 	"minAppVersion": "1.11.0",
 	"description": "Customizes the Slides core plugin navigation, styles, and behavior.",
 	"author": "David V. Kimball",
 	"authorUrl": "https://davidvkimball.com",
-	"fundingUrl": "https://patreon.com/davidvkimball"
+	"fundingUrl": "https://patreon.com/davidvkimball",
+	"isDesktopOnly": false
 }

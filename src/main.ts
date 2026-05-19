@@ -91,9 +91,9 @@ export default class CustomSlidesPlugin extends Plugin {
     if (this.settings.respectObsidianSettings) {
       // Apply Obsidian's font settings directly to reveal.js slides
       // Using setProperty for CSS custom properties (dynamic values)
-      // eslint-disable-next-line obsidianmd/no-static-styles-assignment
+      // eslint-disable-next-line obsidianmd/no-static-styles-assignment -- bridges Obsidian's dynamic --font-interface variable into reveal.js
       body.style.setProperty("--slides-font-interface", "var(--font-interface)");
-      // eslint-disable-next-line obsidianmd/no-static-styles-assignment
+      // eslint-disable-next-line obsidianmd/no-static-styles-assignment -- bridges Obsidian's dynamic --font-text variable into reveal.js
       body.style.setProperty("--slides-font-text", "var(--font-text)");
     } else {
       // Reset to default (reveal.js defaults)
