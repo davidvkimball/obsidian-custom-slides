@@ -12,6 +12,147 @@ export class CustomSlidesSettingTab extends PluginSettingTab {
     this.plugin = plugin;
   }
 
+  // 1.13.0+: framework calls this and skips display().
+  // Pre-1.13.0: this method is not invoked; display() below runs as before.
+  // See https://docs.obsidian.md/plugins/guides/migrate-declarative-settings
+  getSettingDefinitions() {
+    return [
+      {
+        name: "Theme",
+        desc: "Choose a reveal.js theme for your presentations.",
+        control: {
+          type: "dropdown" as const,
+          key: "theme",
+          options: {
+            "default": "Default (match Obsidian)",
+            "black": "Black",
+            "white": "White",
+            "league": "League",
+            "beige": "Beige",
+            "night": "Night",
+            "serif": "Serif",
+            "simple": "Simple",
+            "solarized": "Solarized",
+            "moon": "Moon",
+            "dracula": "Dracula",
+            "sky": "Sky",
+            "blood": "Blood",
+          },
+        },
+      },
+      {
+        name: "Transition effect",
+        desc: "Choose a transition effect between slides.",
+        control: {
+          type: "dropdown" as const,
+          key: "transition",
+          options: {
+            "slide-horizontal": "Slide horizontal (default)",
+            "slide-vertical": "Slide vertical",
+            "fade": "Fade",
+            "none": "None (instant)",
+          },
+        },
+      },
+      {
+        name: "Use WASD for navigation",
+        desc: "Use W, A, S, D keys to navigate slides. Q jumps to first slide, E to last.",
+        control: { type: "toggle" as const, key: "enableWASD" },
+      },
+      {
+        name: "Hide left navigation arrow",
+        desc: "Toggle visibility of the left navigation arrow.",
+        control: { type: "toggle" as const, key: "hideNavigateLeft" },
+      },
+      {
+        name: "Hide right navigation arrow",
+        desc: "Toggle visibility of the right navigation arrow.",
+        control: { type: "toggle" as const, key: "hideNavigateRight" },
+      },
+      {
+        name: "Hide up navigation arrow",
+        desc: "Toggle visibility of the up navigation arrow.",
+        control: { type: "toggle" as const, key: "hideNavigateUp" },
+      },
+      {
+        name: "Hide down navigation arrow",
+        desc: "Toggle visibility of the down navigation arrow.",
+        control: { type: "toggle" as const, key: "hideNavigateDown" },
+      },
+      {
+        name: "Hide close button",
+        desc: "Toggle visibility of the close button.",
+        control: { type: "toggle" as const, key: "hideCloseBtn" },
+      },
+      {
+        name: "Left-align lists",
+        desc: "Toggle to left-align bulleted and numbered lists in presentation mode.",
+        control: { type: "toggle" as const, key: "leftAlignBullets" },
+      },
+      {
+        name: "Progress bar height",
+        desc: "Set the height of the progress bar in pixels.",
+        control: { type: "number" as const, key: "progressHeight", placeholder: "Enter height in pixels", min: 0 },
+      },
+      {
+        name: "Use Obsidian font settings",
+        desc: "Use the same font as your Obsidian text settings in slides.",
+        control: { type: "toggle" as const, key: "respectObsidianSettings" },
+      },
+      {
+        name: "Enable pan",
+        desc: "Allow clicking and dragging to move slides around.",
+        control: { type: "toggle" as const, key: "enablePan" },
+      },
+      {
+        name: "Enable zoom",
+        desc: "Allow using the mouse wheel to zoom in and out of slides.",
+        control: { type: "toggle" as const, key: "enableZoom" },
+      },
+      {
+        name: "Footer text",
+        desc: "Text displayed at the bottom of every slide except the title slide. Leave empty for no footer.",
+        control: { type: "text" as const, key: "footerText", placeholder: "Confidential" },
+      },
+      {
+        name: "Show slide numbers",
+        desc: "Display a slide number on each slide, excluding the title slide.",
+        control: { type: "toggle" as const, key: "showSlideNumbers" },
+      },
+      {
+        name: "Slide number position",
+        desc: "Choose where the slide number appears.",
+        // Show only when slide numbers are enabled. The framework refreshes
+        // predicates automatically after each control change.
+        visible: () => this.plugin.settings.showSlideNumbers,
+        control: {
+          type: "dropdown" as const,
+          key: "slideNumberPosition",
+          options: {
+            "bottom-left": "Bottom left",
+            "bottom-right": "Bottom right",
+          },
+        },
+      },
+      {
+        name: "Auto-fit slides",
+        desc: "Automatically shrink overflowing slide content to fit the viewport.",
+        control: { type: "toggle" as const, key: "enableAutoFit" },
+      },
+    ];
+  }
+
+  // Override the framework's default setControlValue (which only calls saveData)
+  // so that every change runs the plugin's saveSettings() - which also reapplies
+  // dynamic styles and refreshes the slide number element. Without this override,
+  // those side effects would not run on setting change on Obsidian 1.13.0+.
+  // (On older versions this method is unused; display() already calls
+  // saveSettings() in its onChange handlers.)
+  async setControlValue(key: string, value: unknown): Promise<void> {
+    (this.plugin.settings as unknown as Record<string, unknown>)[key] = value;
+    await this.plugin.saveSettings();
+  }
+
   display(): void {
     const { containerEl } = this;
 
