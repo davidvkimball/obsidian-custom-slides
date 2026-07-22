@@ -183,20 +183,15 @@ export class SlideManipulator {
   private applyTransform(): void {
     if (!this.slidesElement) return;
 
-    // We must ensure the transform-origin is set to the center (0,0 of the coordinate space)
-    // to make our translation and scaling math consistent.
-    // Reveal.js slides usually have their origin in the center by default, 
-    // but we'll be explicit.
-    // eslint-disable-next-line obsidianmd/no-static-styles-assignment -- transform-origin must be set imperatively for pan/zoom math
-    this.slidesElement.style.transformOrigin = "center center";
-
-    // Use independent CSS properties to avoid overwriting Reveal.js's transform
-    // Supported in modern browsers (Electron in Obsidian)
-    // translate is applied before scale in the spec
-    // eslint-disable-next-line obsidianmd/no-static-styles-assignment -- runtime-computed pan offset; cannot be a static CSS class
-    (this.slidesElement.style as any).translate = `${this.translateX}px ${this.translateY}px`;
-    // eslint-disable-next-line obsidianmd/no-static-styles-assignment -- runtime-computed zoom scale; cannot be a static CSS class
-    (this.slidesElement.style as any).scale = `${this.scale}`;
+    // Center transform-origin keeps the translate/scale math consistent, and
+    // the independent translate/scale CSS properties avoid overwriting reveal.js's
+    // own transform. setCssProps writes runtime values without tripping the
+    // static-styles lint rule (translate is applied before scale per the spec).
+    this.slidesElement.setCssProps({
+      "transform-origin": "center center",
+      translate: `${this.translateX}px ${this.translateY}px`,
+      scale: `${this.scale}`,
+    });
   }
 
   public reset = (): void => {
@@ -205,13 +200,12 @@ export class SlideManipulator {
     this.translateY = 0;
     this.isPanning = false;
     if (this.slidesElement) {
-      // Clear our custom properties only, leaving Reveal.js's transform intact
-      // eslint-disable-next-line obsidianmd/no-static-styles-assignment -- clears the runtime pan offset on reset
-      (this.slidesElement.style as any).translate = "";
-      // eslint-disable-next-line obsidianmd/no-static-styles-assignment -- clears the runtime zoom scale on reset
-      (this.slidesElement.style as any).scale = "";
-      // eslint-disable-next-line obsidianmd/no-static-styles-assignment -- clears the imperatively set transform-origin on reset
-      this.slidesElement.style.transformOrigin = "";
+      // Clear our custom properties only, leaving reveal.js's transform intact.
+      this.slidesElement.setCssProps({
+        translate: "",
+        scale: "",
+        "transform-origin": "",
+      });
     }
     document.body.classList.remove("is-panning");
   };
@@ -256,15 +250,21 @@ export class SlideManipulator {
     if (!this.slidesElement) return;
     const section = this.slidesElement;
     // Reset any previous zoom so we measure natural size
-    (section.style as any).zoom = "";
+    section.setCssProps({ zoom: "" });
     const slidesContainer = section.closest(".slides");
     if (!slidesContainer) return;
     const containerH = (slidesContainer as HTMLElement).clientHeight;
+    const containerW = (slidesContainer as HTMLElement).clientWidth;
     const naturalH = section.scrollHeight;
-    if (naturalH > containerH) {
-      const zoomFactor = containerH / naturalH;
-      // eslint-disable-next-line obsidianmd/no-static-styles-assignment -- runtime-computed auto-fit zoom factor; cannot be a static CSS class
-      (section.style as any).zoom = `${zoomFactor}`;
+    const naturalW = section.scrollWidth;
+    const overflowsH = naturalH > containerH + 1;
+    const overflowsW = naturalW > containerW + 1;
+    if (overflowsH || overflowsW) {
+      // Shrink by the tighter of the two dimensions so wide content (e.g. code
+      // blocks with long lines) fits horizontally and tall content fits
+      // vertically. Only ever shrink, never enlarge.
+      const zoomFactor = Math.min(containerH / naturalH, containerW / naturalW);
+      section.setCssProps({ zoom: `${zoomFactor}` });
       // CSS zoom interacts non-linearly with reveal.js's transform: scale().
       // A single screen-pixel correction only closes ~50% of the gap, so we
       // square the correction factor to compensate in one pass.
@@ -272,10 +272,15 @@ export class SlideManipulator {
         if (!this.slidesElement || !slidesContainer) return;
         const sectionRect = this.slidesElement.getBoundingClientRect();
         const containerRect = (slidesContainer as HTMLElement).getBoundingClientRect();
-        if (sectionRect.height > containerRect.height + 1) {
-          const correction = containerRect.height / sectionRect.height;
-          const currentZoom = parseFloat((this.slidesElement.style as any).zoom) || 1;
-          (this.slidesElement.style as any).zoom = `${currentZoom * correction * correction}`;
+        const stillOverH = sectionRect.height > containerRect.height + 1;
+        const stillOverW = sectionRect.width > containerRect.width + 1;
+        if (stillOverH || stillOverW) {
+          const correction = Math.min(
+            containerRect.height / sectionRect.height,
+            containerRect.width / sectionRect.width,
+          );
+          const currentZoom = parseFloat(this.slidesElement.style.zoom) || 1;
+          this.slidesElement.setCssProps({ zoom: `${currentZoom * correction * correction}` });
         }
       });
     }

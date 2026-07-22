@@ -40,6 +40,10 @@ export default defineConfig([
     },
     // Custom rule overrides
     rules: {
+      // Register the keyboard-key acronyms used in this plugin's UI text so the
+      // sentence-case rule doesn't flag them (WASD movement keys, plus the Q/E
+      // first/last-slide shortcuts).
+      "obsidianmd/ui/sentence-case": ["error", { acronyms: ["WASD", "Q", "E"] }],
       "@typescript-eslint/ban-ts-comment": "off",
       "@typescript-eslint/no-empty-function": "off",
       "no-prototype-builtins": "off",

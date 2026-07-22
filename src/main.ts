@@ -77,6 +77,7 @@ export default class CustomSlidesPlugin extends Plugin {
     body.classList.toggle("left-align-bullets", this.settings.leftAlignBullets);
     body.classList.toggle("enable-pan", this.settings.enablePan);
     body.classList.toggle("enable-zoom", this.settings.enableZoom);
+    body.classList.toggle("enable-auto-fit", this.settings.enableAutoFit);
 
     // Set dynamic custom property for progress height
     body.style.setProperty("--progress-height", `${this.settings.progressHeight}px`);
@@ -91,10 +92,10 @@ export default class CustomSlidesPlugin extends Plugin {
     if (this.settings.respectObsidianSettings) {
       // Apply Obsidian's font settings directly to reveal.js slides
       // Using setProperty for CSS custom properties (dynamic values)
-      // eslint-disable-next-line obsidianmd/no-static-styles-assignment -- bridges Obsidian's dynamic --font-interface variable into reveal.js
-      body.style.setProperty("--slides-font-interface", "var(--font-interface)");
-      // eslint-disable-next-line obsidianmd/no-static-styles-assignment -- bridges Obsidian's dynamic --font-text variable into reveal.js
-      body.style.setProperty("--slides-font-text", "var(--font-text)");
+      body.setCssProps({
+        "--slides-font-interface": "var(--font-interface)",
+        "--slides-font-text": "var(--font-text)",
+      });
     } else {
       // Reset to default (reveal.js defaults)
       body.style.removeProperty("--slides-font-interface");
@@ -176,10 +177,10 @@ export default class CustomSlidesPlugin extends Plugin {
     const currentSlide = leafSlides.find(s => s.classList.contains("present"));
 
     if (!currentSlide || currentSlide === leafSlides[0]) {
-      this.slideNumberEl.style.display = "none";
+      this.slideNumberEl.setCssProps({ display: "none" });
     } else {
       const index = leafSlides.indexOf(currentSlide);
-      this.slideNumberEl.style.display = "";
+      this.slideNumberEl.setCssProps({ display: "" });
       this.slideNumberEl.textContent = String(index);
     }
   }

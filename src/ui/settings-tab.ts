@@ -56,7 +56,7 @@ export class CustomSlidesSettingTab extends PluginSettingTab {
       },
       {
         name: "Use WASD for navigation",
-        desc: "Use W, A, S, D keys to navigate slides. Q jumps to first slide, E to last.",
+        desc: "Use the WASD keys to navigate slides. Q jumps to the first slide and E to the last.",
         control: { type: "toggle" as const, key: "enableWASD" },
       },
       {
@@ -209,7 +209,7 @@ export class CustomSlidesSettingTab extends PluginSettingTab {
     generalGroup.addSetting(setting => {
       setting
         .setName("Use WASD for navigation")
-        .setDesc("Use W, A, S, D keys to navigate slides. Q jumps to first slide, E to last.")
+        .setDesc("Use the WASD keys to navigate slides. Q jumps to the first slide and E to the last.")
         .addToggle(toggle => toggle
           .setValue(this.plugin.settings.enableWASD)
           .onChange(async value => {
@@ -342,26 +342,26 @@ export class CustomSlidesSettingTab extends PluginSettingTab {
           }));
     });
 
-    generalGroup.addSetting((setting: any) => {
+    generalGroup.addSetting((setting) => {
       setting
         .setName("Footer text")
         .setDesc("Text displayed at the bottom of every slide except the title slide. Leave empty for no footer.")
-        .addText((text: any) => text
+        .addText((text) => text
           .setPlaceholder("Confidential")
           .setValue(this.plugin.settings.footerText)
-          .onChange(async (value: any) => {
+          .onChange(async (value) => {
             this.plugin.settings.footerText = value;
             await this.plugin.saveSettings();
           }));
     });
 
-    generalGroup.addSetting((setting: any) => {
+    generalGroup.addSetting((setting) => {
       setting
         .setName("Show slide numbers")
         .setDesc("Display a slide number on each slide, excluding the title slide.")
-        .addToggle((toggle: any) => toggle
+        .addToggle((toggle) => toggle
           .setValue(this.plugin.settings.showSlideNumbers)
-          .onChange(async (value: any) => {
+          .onChange(async (value) => {
             this.plugin.settings.showSlideNumbers = value;
             await this.plugin.saveSettings();
             this.display();
@@ -369,30 +369,30 @@ export class CustomSlidesSettingTab extends PluginSettingTab {
     });
 
     if (this.plugin.settings.showSlideNumbers) {
-      generalGroup.addSetting((setting: any) => {
+      generalGroup.addSetting((setting) => {
         setting
           .setName("Slide number position")
           .setDesc("Choose where the slide number appears.")
-          .addDropdown((dropdown: any) => dropdown
+          .addDropdown((dropdown) => dropdown
             .addOptions({
               "bottom-left": "Bottom left",
               "bottom-right": "Bottom right"
             })
             .setValue(this.plugin.settings.slideNumberPosition)
-            .onChange(async (value: any) => {
+            .onChange(async (value) => {
               this.plugin.settings.slideNumberPosition = value as SlideNumberPosition;
               await this.plugin.saveSettings();
             }));
       });
     }
 
-    generalGroup.addSetting((setting: any) => {
+    generalGroup.addSetting((setting) => {
       setting
         .setName("Auto-fit slides")
         .setDesc("Automatically shrink overflowing slide content to fit the viewport.")
-        .addToggle((toggle: any) => toggle
+        .addToggle((toggle) => toggle
           .setValue(this.plugin.settings.enableAutoFit)
-          .onChange(async (value: any) => {
+          .onChange(async (value) => {
             this.plugin.settings.enableAutoFit = value;
             await this.plugin.saveSettings();
           }));
