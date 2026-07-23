@@ -65,14 +65,17 @@ body.is-panning {
   max-width: none !important;
 }
 
-/* When auto-fit is on, let code blocks report their true size so the auto-fit
-   measurement can shrink them. reveal.js otherwise caps `pre code` with a
-   max-height and overflow:auto, so tall/wide code scrolls inside its own box
-   instead of growing the section, and auto-fit never sees the overflow. */
+/* When auto-fit is on, uncap the code block's height and wrap long lines so a
+   single long line stays within the slide width instead of overflowing to the
+   right. Wrapping (like the Obsidian editor) keeps the text readable; the
+   auto-fit measurement then shrinks the now-taller block vertically to fit.
+   overflow-wrap:anywhere also breaks unbroken tokens (long strings, URLs). */
 body.enable-auto-fit .reveal .slides section pre,
 body.enable-auto-fit .reveal .slides section pre code {
   max-height: none !important;
-  max-width: none !important;
+  max-width: 100% !important;
+  white-space: pre-wrap !important;
+  overflow-wrap: anywhere !important;
   overflow: visible !important;
 }
 
