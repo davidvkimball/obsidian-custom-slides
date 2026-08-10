@@ -23,7 +23,7 @@ export class SlideManipulator {
   }
 
   private attachListeners(): void {
-    const reveal = document.querySelector(".reveal") as HTMLElement;
+    const reveal = document.querySelector<HTMLElement>(".reveal");
     if (!reveal) return;
 
     this.revealContainer = reveal;
@@ -54,15 +54,15 @@ export class SlideManipulator {
     // Target only the currently active slide
     // Reveal.js might not have added .present immediately on the first slide
     // So we'll try to find the current indices and target the matching section
-    this.slidesElement = this.revealContainer.querySelector(".slides > section.present") as HTMLElement;
+    this.slidesElement = this.revealContainer.querySelector<HTMLElement>(".slides > section.present");
 
     // If not found, try the first section as a fallback for the very first launch
     if (!this.slidesElement) {
-      this.slidesElement = this.revealContainer.querySelector(".slides > section") as HTMLElement;
+      this.slidesElement = this.revealContainer.querySelector<HTMLElement>(".slides > section");
     }
 
     // Handle nested vertical slides
-    const verticalSlide = this.slidesElement?.querySelector("section.present") as HTMLElement;
+    const verticalSlide = this.slidesElement?.querySelector<HTMLElement>("section.present");
     if (verticalSlide) {
       this.slidesElement = verticalSlide;
     }
@@ -183,12 +183,10 @@ export class SlideManipulator {
   private applyTransform(): void {
     if (!this.slidesElement) return;
 
-    // Center transform-origin keeps the translate/scale math consistent, and
-    // the independent translate/scale CSS properties avoid overwriting reveal.js's
-    // own transform. setCssProps writes runtime values without tripping the
-    // static-styles lint rule (translate is applied before scale per the spec).
+    // The independent translate/scale CSS properties avoid overwriting reveal.js's
+    // own transform, and only these runtime values are written from here. The
+    // static transform-origin lives in styles.css.
     this.slidesElement.setCssProps({
-      "transform-origin": "center center",
       translate: `${this.translateX}px ${this.translateY}px`,
       scale: `${this.scale}`,
     });
@@ -199,14 +197,9 @@ export class SlideManipulator {
     this.translateX = 0;
     this.translateY = 0;
     this.isPanning = false;
-    if (this.slidesElement) {
-      // Clear our custom properties only, leaving reveal.js's transform intact.
-      this.slidesElement.setCssProps({
-        translate: "",
-        scale: "",
-        "transform-origin": "",
-      });
-    }
+    // Writing the reset values back through applyTransform restores the identity
+    // transform (no offset, no scale) and leaves reveal.js's own transform intact.
+    this.applyTransform();
     document.body.classList.remove("is-panning");
   };
 
@@ -226,8 +219,8 @@ export class SlideManipulator {
     if (!this.slidesElement) return;
     const targetSlide = this.slidesElement;
     // Double rAF ensures reveal.js layout is fully settled before measuring
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
         if (this.slidesElement === targetSlide) {
           this.applyAutoFitZoom();
         }
@@ -268,7 +261,7 @@ export class SlideManipulator {
       // CSS zoom interacts non-linearly with reveal.js's transform: scale().
       // A single screen-pixel correction only closes ~50% of the gap, so we
       // square the correction factor to compensate in one pass.
-      requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
         if (!this.slidesElement || !slidesContainer) return;
         const sectionRect = this.slidesElement.getBoundingClientRect();
         const containerRect = (slidesContainer as HTMLElement).getBoundingClientRect();

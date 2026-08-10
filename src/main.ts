@@ -108,13 +108,13 @@ export default class CustomSlidesPlugin extends Plugin {
       this.footerEl = null;
       return;
     }
-    const reveal = document.querySelector(".reveal");
+    const reveal = document.querySelector<HTMLElement>(".reveal");
     if (!reveal) return;
 
-    const footer = document.createElement("div");
-    footer.className = "custom-slides-footer";
-    footer.textContent = this.settings.footerText;
-    reveal.appendChild(footer);
+    const footer = reveal.createDiv({
+      cls: "custom-slides-footer",
+      text: this.settings.footerText,
+    });
     this.footerEl = footer;
 
     this._footerVisibilityHandler = () => this.updateFooterVisibility();
@@ -153,13 +153,12 @@ export default class CustomSlidesPlugin extends Plugin {
     this.destroySlideNumber();
     if (!this.settings.showSlideNumbers) return;
 
-    const reveal = document.querySelector(".reveal");
+    const reveal = document.querySelector<HTMLElement>(".reveal");
     if (!reveal) return;
 
-    const numEl = document.createElement("div");
-    numEl.className = "custom-slide-number";
-    numEl.classList.add(`slide-number-${this.settings.slideNumberPosition}`);
-    reveal.appendChild(numEl);
+    const numEl = reveal.createDiv({
+      cls: ["custom-slide-number", `slide-number-${this.settings.slideNumberPosition}`],
+    });
     this.slideNumberEl = numEl;
 
     this._slideNumberHandler = () => this.updateSlideNumberVisibility();

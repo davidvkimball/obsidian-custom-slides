@@ -68,6 +68,15 @@ export default defineConfig([
         __dirname: "readonly",
         __filename: "readonly"
       }
+    },
+    // Build tooling (esbuild config, version bump) runs in Node, not inside the
+    // plugin sandbox, so the mobile-compatibility and console restrictions that
+    // apply to plugin source are not relevant here. The community scorecard
+    // scans plugin source only and does not flag these files either.
+    rules: {
+      "obsidianmd/no-nodejs-modules": "off",
+      "obsidianmd/rule-custom-message": "off",
+      "no-console": "off"
     }
   },
 ]);

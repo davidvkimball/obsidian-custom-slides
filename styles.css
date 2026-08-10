@@ -82,6 +82,9 @@ body.enable-auto-fit .reveal .slides section pre code {
 .reveal .slides section {
   /* This ensures our independent translate/scale properties apply correctly to the slide itself */
   transition: transform 0.8s ease, opacity 0.8s ease;
+  /* Center origin keeps the pan/zoom translate/scale math consistent. Static, so
+     it lives here rather than being written from the pan/zoom code. */
+  transform-origin: center center;
 }
 
 /* Font inheritance for slides */
